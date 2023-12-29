@@ -7,7 +7,7 @@ title: 從零開始的coding生活
 subtitle: ''
 description: ''
 keywords: 'Java'
-author: Howard
+author: HowHow
 language: zh-TW
 timezone: ''
 
@@ -102,4 +102,7 @@ theme: next #landscape
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: ''
+  type: git
+  repo: https://github.com/yinghao1019/yinghao1019.github.io
+  branch: production
+
