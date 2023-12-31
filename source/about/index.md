@@ -59,4 +59,4 @@ description:
   - Nginx
 
 ## 證照與作品集
-<img src="\images\about\azure-certificate.png" width = "50%" height = "50%" alt="azure-certificate" align=left />
+<img src="\images\about\azure-certificate.png" width = "50%" height = "50%" alt="azure-certificate" />
