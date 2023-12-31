@@ -117,7 +117,7 @@ symbols_count_time:
   wpm: 275  # 一分鐘閱讀字數
   suffix: "minutes"
 
-#post serach
+#post search
 search:
   path: search.json
   field: post
