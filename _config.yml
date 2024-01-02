@@ -4,10 +4,10 @@
 
 # Site
 title: DuDuHow's Coding life
-subtitle: ''
-description: ''
+subtitle: 'Backend Engineer at BenQ'
+description: '歡迎來到嘟嘟皓的程式人生'
 keywords: 'Java'
-author: DuDu How
+author: DuDuHow
 language: zh-TW
 timezone: ''
 
@@ -45,6 +45,7 @@ relative_link: false
 future: true
 syntax_highlighter: highlight.js
 highlight:
+  enable: true
   line_number: true
   auto_detect: false
   tab_replace: ''

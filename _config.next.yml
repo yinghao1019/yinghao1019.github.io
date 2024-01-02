@@ -147,7 +147,7 @@ avatar:
   # Replace the default image and set the url here.
   url: https://i.imgur.com/awk567A.jpg
   # If true, the avatar will be dispalyed in circle.
-  rounded: false
+  rounded: true
   # If true, the avatar will be rotated with the cursor.
   rotated: false
   opacity: 1
@@ -378,11 +378,12 @@ codeblock:
   # Code Highlight theme
   # All available themes: https://theme-next.js.org/highlight/
   theme:
-    light: default
-    dark: stackoverflow-dark
+    light: rainbow
+    dark: rainbow
   prism:
     light: prism
     dark: prism-dark
+    border_radius: 5
   # Add copy button on codeblock
   copy_button:
     enable: true
