@@ -21,7 +21,7 @@ minify: false
 custom_file_path:
   head: source/_data/head.njk
   #header: source/_data/header.njk
-  #sidebar: source/_data/sidebar.njk
+  sidebar: source/_data/sidebar.njk
   #postMeta: source/_data/post-meta.njk
   #postBodyStart: source/_data/post-body-start.njk
   #postBodyEnd: source/_data/post-body-end.njk
@@ -101,8 +101,8 @@ menu:
   home: / || fa fa-home
   categories: /categories/ || fa fa-th
   tags: /tags/ || fa fa-tags
+  archives: /archives/ || fa fa-archive
   about: /about/ || fa-regular fa-address-book
-  #  archives: /archives/ || fa fa-archive
   #schedule: /schedule/ || fa fa-calendar
   #sitemap: /sitemap.xml || fa fa-sitemap
   #commonweal: /404/ || fa fa-heartbeat
@@ -147,7 +147,7 @@ avatar:
   # Replace the default image and set the url here.
   url: https://i.imgur.com/awk567A.jpg
   # If true, the avatar will be dispalyed in circle.
-  rounded: true
+  rounded: false
   # If true, the avatar will be rotated with the cursor.
   rotated: false
   opacity: 1
@@ -169,7 +169,6 @@ social:
   #YouTube: https://youtube.com/yourname || fab fa-youtube
   #Instagram: https://instagram.com/yourname || fab fa-instagram
   #Skype: skype:yourname?call|chat || fab fa-skype
-
 
 social_icons:
   enable: true
@@ -303,6 +302,10 @@ related_posts:
   enable: false
   icon: fa fa-signs-post
 
+recent_posts_title: Latest Posts
+recent_posts_layout: block
+recent_posts: true
+
 # Post edit
 # Easily browse and edit blog source code online.
 post_edit:
@@ -313,7 +316,6 @@ post_edit:
 # Show previous post and next post in post footer if exists
 # Available values: left | right | false
 post_navigation: left
-
 
 # ---------------------------------------------------------------
 # Custom Page Settings
