@@ -6,10 +6,15 @@
 title: DuDuHow's Coding life
 subtitle: ''
 description: '歡迎來到嘟嘟皓的程式人生'
-keywords: 'Java'
+keywords:
+  - 'Java 後端工程師'
+  - '雲端'
+  - '後端工程師'
+  - 'Spring Boot'
+  - 'Unit Test'
 author: DuDuHow
 language: zh-TW
-timezone: ''
+timezone: 'Asia/Taipei'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
