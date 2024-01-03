@@ -4,7 +4,7 @@
 
 # Site
 title: DuDuHow's Coding life
-subtitle: 'Backend Engineer at BenQ'
+subtitle: ''
 description: '歡迎來到嘟嘟皓的程式人生'
 keywords: 'Java'
 author: DuDuHow
@@ -13,7 +13,7 @@ timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://example.com
+url: https://yinghao1019.github.io
 permalink: :title/
 permalink_defaults:
 pretty_urls:
@@ -124,3 +124,16 @@ search:
   field: post
   format: html
   limit: 1000
+
+# ---------------------------------------------------------------
+# SEO Settings
+# ---------------------------------------------------------------
+sitemap:
+  path: sitemap.xml
+  #template: ./sitemap_template.xml
+  rel: false
+  tags: true
+  categories: true
+
+nofollow:
+  enable: true
