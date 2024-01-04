@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://yinghao1019.github.io/gcp-pubsub/</loc>
+    
+    <lastmod>2024-01-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://yinghao1019.github.io/unit-test-basic/</loc>
     
     <lastmod>2024-01-04</lastmod>
@@ -65,6 +74,27 @@
 
   
   <url>
+    <loc>https://yinghao1019.github.io/tags/Message-Queue/</loc>
+    <lastmod>2024-01-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yinghao1019.github.io/tags/Async/</loc>
+    <lastmod>2024-01-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yinghao1019.github.io/tags/GCP/</loc>
+    <lastmod>2024-01-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://yinghao1019.github.io/tags/unit-test/</loc>
     <lastmod>2024-01-04</lastmod>
     <changefreq>weekly</changefreq>
@@ -72,6 +102,13 @@
   </url>
   
 
+  
+  <url>
+    <loc>https://yinghao1019.github.io/categories/GCP/</loc>
+    <lastmod>2024-01-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
   
   <url>
     <loc>https://yinghao1019.github.io/categories/test/</loc>
