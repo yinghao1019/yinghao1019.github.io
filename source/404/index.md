@@ -1,8 +1,33 @@
 ---
 title: 找不到存在的頁面
 date: 2021-09-08 13:50:44
-type: categories
 comments: false
 permalink: /404.html
-description: 很抱歉，找不到您想要存取的頁面。您可以經由以下分類找到您想要的內容。
+description: 很抱歉，找不到您想要存取的頁面。
 ---
+
+## 這是一個不存在的頁面
+
+很抱歉，你目前存取的頁面並不存在。
+
+預計將在約 <span id="timeout">5</span> 秒後返回首頁。
+
+如果你很急著想看文章，你可以 **[點這裡](https://yinghao1019.github.io/)** 返回首頁。
+
+<script>
+let countTime = 5;
+
+function count() {
+  
+  document.getElementById('timeout').textContent = countTime;
+  countTime -= 1;
+  if(countTime === 0){
+    location.href = 'https://yinghao1019.github.io/';
+  }
+  setTimeout(() => {
+    count();
+  }, 1000);
+}
+
+count();
+</script>
