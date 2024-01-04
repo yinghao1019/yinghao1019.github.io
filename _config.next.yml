@@ -40,8 +40,8 @@ custom_file_path:
 #scheme: Gemini
 #scheme: Pisces
 #scheme: Muse
-scheme: Mist
-#scheme: Gemini
+#scheme: Mist
+scheme: Gemini
 
 # Dark Mode
 darkmode: false
@@ -52,10 +52,10 @@ darkmode: false
 # ---------------------------------------------------------------
 
 favicon:
-  small: /images/favicon-16x16-next.png
-  medium: /images/favicon-32x32-next.png
-  apple_touch_icon: /images/apple-touch-icon-next.png
-  safari_pinned_tab: /images/logo.svg
+  small: /images/favicon_hexo.ico
+  medium: /images/favicon_hexo.ico
+  apple_touch_icon: /images/favicon_hexo.ico
+  safari_pinned_tab: /images/favicon_hexo.ico
   #android_manifest: /manifest.json
   #ms_browserconfig: /images/browserconfig.xml
 
