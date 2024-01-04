@@ -22,15 +22,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"yinghao1019.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"style":"flat","show_result":true},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="單元測試的目的在於測試每個 class 的 function 是不是如期運轉，故撰寫目的在於測試在 A 情境 (test case) 下的 Input&#x2F;Output 是不是如預期所想的。透過寫單元測試，也能幫助我們設計程式的撰寫習慣，避免利用一個 function 封裝全部的業務邏輯。">
+    <meta name="description" content="單元測試的主要目的在於驗證每個類別的函式是否按照預期運作，好的單元測試能提升程式碼的開發品質與寫作習慣。 故本篇文章介紹如何設計單元測試、單元測試相關名詞等等觀念。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="單元測試基本概念">
+<meta property="og:title" content="學習單元測試 - 基本觀念">
 <meta property="og:url" content="https://yinghao1019.github.io/unit-test-basic/">
 <meta property="og:site_name" content="DuDuHow&#39;s Coding life">
-<meta property="og:description" content="單元測試的目的在於測試每個 class 的 function 是不是如期運轉，故撰寫目的在於測試在 A 情境 (test case) 下的 Input&#x2F;Output 是不是如預期所想的。透過寫單元測試，也能幫助我們設計程式的撰寫習慣，避免利用一個 function 封裝全部的業務邏輯。">
+<meta property="og:description" content="單元測試的主要目的在於驗證每個類別的函式是否按照預期運作，好的單元測試能提升程式碼的開發品質與寫作習慣。 故本篇文章介紹如何設計單元測試、單元測試相關名詞等等觀念。">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2023-12-29T01:47:44.000Z">
-<meta property="article:modified_time" content="2024-01-04T14:40:29.987Z">
+<meta property="article:modified_time" content="2024-01-04T15:55:55.462Z">
 <meta property="article:author" content="DuDuHow">
 <meta property="article:tag" content="unit test">
 <meta name="twitter:card" content="summary">
@@ -40,10 +40,10 @@
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://yinghao1019.github.io/unit-test-basic/","path":"unit-test-basic/","title":"單元測試基本概念"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://yinghao1019.github.io/unit-test-basic/","path":"unit-test-basic/","title":"學習單元測試 - 基本觀念"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>單元測試基本概念 | DuDuHow's Coding life</title>
+<title>學習單元測試 - 基本觀念 | DuDuHow's Coding life</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0W303FRRFR"></script>
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-0W303FRRFR","only_pageview":false,"measure_protocol_api_secret":null}</script>
@@ -152,7 +152,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">單元測試流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%90%E6%B8%85%E5%B0%8D%E8%B1%A1%E8%88%87%E8%A8%AD%E8%A8%88%E6%B8%AC%E8%A9%A6%E6%A1%88%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">釐清對象與設計測試案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%AC%E8%A9%A6%E7%92%B0%E5%A2%83%E6%BA%96%E5%82%99-JUnit"><span class="nav-number">3.</span> <span class="nav-text">測試環境準備 (JUnit)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E4%BE%9D%E7%89%A9%E4%BB%B6%E9%9A%94%E9%9B%A2-Test-Double-%EF%BC%86-Mockito"><span class="nav-number">4.</span> <span class="nav-text">相依物件隔離 (Test Double ＆ Mockito)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%A2-Dummy-%E2%80%94-%E5%8F%96%E4%BB%A3%E4%B8%8D%E5%9C%A8%E4%B9%8E%E7%B4%B0%E7%AF%80%E7%9A%84%E7%89%A9%E4%BB%B6"><span class="nav-number">4.1.</span> <span class="nav-text">・Dummy — 取代不在乎細節的物件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%A2-Stub-%E2%80%94-%E8%AE%93DOC%E6%8F%90%E4%BE%9BSUT%E6%83%B3%E8%A6%81%E7%9A%84Input-Output%E7%9A%84%E7%89%A9%E4%BB%B6"><span class="nav-number">4.2.</span> <span class="nav-text">・Stub — 讓 DOC 提供 SUT 想要的 Input&#x2F;Output 的物件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%A2-Mock-%E2%80%94-%E9%83%BD%E6%98%AF%E5%81%87%E7%9A%84"><span class="nav-number">4.3.</span> <span class="nav-text">・Mock — 都是假的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%A2-Spy-%E2%80%94-%E7%9B%A3%E6%8E%A7DOC%E8%88%87SUT%E7%9A%84%E4%BA%92%E5%8B%95"><span class="nav-number">4.4.</span> <span class="nav-text">・Spy — 監控 DOC 與 SUT 的互動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%A2-Fake-%E2%80%94-%E7%92%B0%E5%A2%83%E6%9C%89%E9%99%90%E5%88%B6%E6%88%91%E5%8F%AA%E5%A5%BD%E5%9C%A8%E5%AF%AB%E4%B8%80%E5%80%8B"><span class="nav-number">4.5.</span> <span class="nav-text">・Fake — 環境有限制我只好在寫一個</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%AC%E8%A9%A6%E7%B5%90%E6%9E%9C-JUnit-AssertJ-Mockito"><span class="nav-number">5.</span> <span class="nav-text">測試結果 (JUnit &#x2F; AssertJ &#x2F; Mockito)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%AC%E8%A9%A6%E6%A1%88%E4%BE%8B%E7%AE%A1%E7%90%86-JUnit-JaCoCo"><span class="nav-number">6.</span> <span class="nav-text">測試案例管理 (JUnit &amp; JaCoCo)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%B4%B9"><span class="nav-number">7.</span> <span class="nav-text">單元測試常用工具介紹</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">單元測試流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%90%E6%B8%85%E5%B0%8D%E8%B1%A1%E8%88%87%E8%A8%AD%E8%A8%88%E6%B8%AC%E8%A9%A6%E6%A1%88%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">釐清對象與設計測試案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%AC%E8%A9%A6%E7%92%B0%E5%A2%83%E6%BA%96%E5%82%99-JUnit"><span class="nav-number">4.</span> <span class="nav-text">測試環境準備 (JUnit)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E4%BE%9D%E7%89%A9%E4%BB%B6%E9%9A%94%E9%9B%A2-Test-Double-%EF%BC%86-Mockito"><span class="nav-number">5.</span> <span class="nav-text">相依物件隔離 (Test Double ＆ Mockito)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%AC%E8%A9%A6%E7%B5%90%E6%9E%9C-JUnit-AssertJ-Mockito"><span class="nav-number">6.</span> <span class="nav-text">測試結果 (JUnit &#x2F; AssertJ &#x2F; Mockito)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">7.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -199,7 +199,7 @@
   </div>
   <ul class="links-of-blogroll-list">
       <li>
-          <a href="/unit-test-basic/" title="單元測試基本概念" target="_blank">單元測試基本概念</a>
+          <a href="/unit-test-basic/" title="學習單元測試 - 基本觀念" target="_blank">學習單元測試 - 基本觀念</a>
       </li>
   </ul>
   </div>
@@ -237,12 +237,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="單元測試基本概念 | DuDuHow's Coding life">
-      <meta itemprop="description" content>
+      <meta itemprop="name" content="學習單元測試 - 基本觀念 | DuDuHow's Coding life">
+      <meta itemprop="description" content="單元測試的主要目的在於驗證每個類別的函式是否按照預期運作，好的單元測試能提升程式碼的開發品質與寫作習慣。 故本篇文章介紹如何設計單元測試、單元測試相關名詞等等觀念。">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          單元測試基本概念
+          學習單元測試 - 基本觀念
         </h1>
 
         <div class="post-meta-container">
@@ -260,7 +260,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新於</span>
-      <time title="修改時間：2024-01-04 22:40:29" itemprop="dateModified" datetime="2024-01-04T22:40:29+08:00">2024-01-04</time>
+      <time title="修改時間：2024-01-04 23:55:55" itemprop="dateModified" datetime="2024-01-04T23:55:55+08:00">2024-01-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -289,13 +289,14 @@
   
 </div>
 
+            <div class="post-description">單元測試的主要目的在於驗證每個類別的函式是否按照預期運作，好的單元測試能提升程式碼的開發品質與寫作習慣。 故本篇文章介紹如何設計單元測試、單元測試相關名詞等等觀念。</div>
         </div>
       </header>
 
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>單元測試的目的在於測試每個 class 的 function 是不是如期運轉，故撰寫目的在於測試在 A 情境 (test case) 下的 Input/Output 是不是如預期所想的。透過寫單元測試，也能幫助我們設計程式的撰寫習慣，避免利用一個 function 封裝全部的業務邏輯。</p>
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>單元測試的目的在於測試每個 class 的 function 是不是如期運轉，故撰寫目的在於測試在 A 情境 (test case) 下的<br>Input/Output 是不是如預期所想的。透過寫單元測試，也能幫助我們設計程式的撰寫習慣，避免利用一個 function 封裝全部的業務邏輯。</p>
 <span id="more"></span>
 
 <h2 id="單元測試流程"><a href="#單元測試流程" class="headerlink" title="單元測試流程"></a>單元測試流程</h2><ol>
@@ -304,7 +305,6 @@
 <li> 測試環境準備 (JUnit)</li>
 <li> 相依物件隔離 (Test Double &amp; Mockito)</li>
 <li> 測試結果 (JUnit &amp; AssertJ &amp; Mockito)</li>
-<li> 測試案例管理 (JUnit &amp; JaCoCo)</li>
 </ol>
 <h2 id="釐清對象與設計測試案例"><a href="#釐清對象與設計測試案例" class="headerlink" title="釐清對象與設計測試案例"></a>釐清對象與設計測試案例</h2><p>首先，撰寫單元測試前，需先釐清 SUT , DOC 的名詞概念意義 :</p>
 <ul>
@@ -314,8 +314,10 @@
 <p>因此在概念上，僅需思考 SUT 的元件是誰，以及要如何進行測試，其餘 SUT 裡面用到的 DOC 元件則是需要將它進行隔絕。 </p>
 <p>這些 DOC 元件則會在他們的單元測試中測試，只要 DOC 在自己的單元測試沒問題，那在 SUT 裡也不會有問題。</p>
 <p>找出了 SUT, 就可以開始根據 SUT 設計相對應的 <strong>測試案例 (Test Case)</strong> , 為了確保功能的完整性，需設計多個測試案例來測試功能。</p>
-<p><strong>測試案例的準則為，只要該物件的輸入不同，結果也是不同的情況，基本上就能拆分出一個測試案例。</strong></p>
-<p>舉例來說，代測功能中具有處理例外的情況，此時例外情況通常輸入的值會與正常時不同。因此例外與正常執行的情況皆為不同的<strong>測試案例 (Test case)。</strong></p>
+<blockquote>
+<p>測試案例的準則為，只要該物件的輸入不同，結果也是不同的情況，基本上就能拆分出一個測試案例。</p>
+</blockquote>
+<p>舉例來說，代測功能中具有處理例外的情況，此時例外情況通常輸入的值會與正常時不同。<br>因此例外與正常執行的情況皆為不同的<strong>測試案例 (Test case)。</strong></p>
 <p>而 Test Case 的設計大多會 Follow 3A Pattern，如下:</p>
 <figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testMethodNameReturnWhat</span><span class="params">()</span></span><br><span class="line">{</span><br><span class="line">   <span class="comment">//Arrange    </span></span><br><span class="line">    </span><br><span class="line">   <span class="comment">//Act   </span></span><br><span class="line">  </span><br><span class="line">   <span class="comment">//Assert</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
@@ -328,27 +330,28 @@
 <li><p>Assert: 驗證該方法輸出的資料是否符合預期 or 方始使用 DOC 的次數等等</p>
 </li>
 </ul>
-<h2 id="測試環境準備-JUnit"><a href="#測試環境準備-JUnit" class="headerlink" title="測試環境準備( JUnit )"></a>測試環境準備 (JUnit)</h2><p>當開始執行測試時，需要做的事前準備輸出報告 (測試案例成功與否) 與環境 (是否要先準備假資料，或是啟動 Web container)，與當結束後是否要進行清理 (可能測試寫檔需要刪除測試產生的檔案)，這個環節 Java 通常都使用 JUnit 套件輔助撰寫，在後面的系列文會有詳細的 JUnit 介紹。</p>
+<h2 id="測試環境準備-JUnit"><a href="#測試環境準備-JUnit" class="headerlink" title="測試環境準備( JUnit )"></a>測試環境準備 (JUnit)</h2><p>當開始執行測試時，需要做的事前準備輸出報告 (測試案例成功與否) 與環境 (是否要先準備假資料，或是啟動 Web container)，<br>與當結束後是否要進行清理 (可能測試寫檔需要刪除測試產生的檔案)，這個環節 Java 通常都使用 JUnit 套件輔助撰寫，<br>在後面的系列文會有詳細的 JUnit 介紹。</p>
 <h2 id="相依物件隔離-Test-Double-＆-Mockito"><a href="#相依物件隔離-Test-Double-＆-Mockito" class="headerlink" title="相依物件隔離(Test Double ＆ Mockito)"></a>相依物件隔離 (Test Double ＆ Mockito)</h2><p>為了不讓 DOC 物件影響 SUT 測試的結果，故需要使用隔離方法來排除使用的 DOC 物件。</p>
-<p>通常隔離的概念為 Test Double (測試替身), 而隔離的 DOC 因為被使用的功能主要分為兩類:</p>
-<p>Test Double 包含了：</p>
-<p>物件: Dummy &amp; Stub</p>
-<p>作出 Test Double 的方法: Mock &amp; Spy &amp; Fake</p>
-<h3 id="•-Dummy-—-取代不在乎細節的物件"><a href="#•-Dummy-—-取代不在乎細節的物件" class="headerlink" title="• Dummy — 取代不在乎細節的物件"></a>・Dummy — 取代不在乎細節的物件</h3><p>要被測試的方法中，如被測試的方法實作並不會呼叫 DOC 物件的方法 or 不需要 DOC 物件的資料來完成時作功能，像是只是簡單地去計算數量，則該 DOC 物件就為此類別。</p>
-<h3 id="•-Stub-—-讓DOC提供SUT想要的Input-Output的物件"><a href="#•-Stub-—-讓DOC提供SUT想要的Input-Output的物件" class="headerlink" title="• Stub — 讓DOC提供SUT想要的Input/Output的物件"></a>・Stub — 讓 DOC 提供 SUT 想要的 Input/Output 的物件</h3><p>Stub 則是 DOC 的物件內容會影像到 SUT 的 method 執行結果，即為 Stub。</p>
-<h3 id="•-Mock-—-都是假的"><a href="#•-Mock-—-都是假的" class="headerlink" title="• Mock — 都是假的"></a>・Mock — 都是假的</h3><p>由於 Stub 物件會影響我們的測試結果，故利用 Mock 的方式來模擬 DOC 物件，故需要設定我們輸入的值以及對應預期測試情境下要輸出的值來進行替換。</p>
-<h3 id="•-Spy-—-監控DOC與SUT的互動"><a href="#•-Spy-—-監控DOC與SUT的互動" class="headerlink" title="• Spy — 監控DOC與SUT的互動"></a>・Spy — 監控 DOC 與 SUT 的互動</h3><p>Spy 主要功能為用來檢視 Mock 與 DOC 之間的交互作用。</p>
-<h3 id="•-Fake-—-環境有限制我只好在寫一個"><a href="#•-Fake-—-環境有限制我只好在寫一個" class="headerlink" title="• Fake — 環境有限制我只好在寫一個"></a>・Fake — 環境有限制我只好在寫一個</h3><p>其實有 Mock 和 SPY 方法在單元測試就涵蓋了 99% 的覆蓋了，而 Fake 就是真實寫一個簡單的邏輯取代原本得邏輯 (Mock 和 Spy 都是直接輸出需要的值 Fake 則要寫邏輯)，舉例：Database 的使用，在單元測試使用 H2 (In-memory database)，或是在內網開發環境不能使用外網時，SSL 憑證檢查工具可以寫一個 Fake，改寫成去讀隨機以準備好在 Resource 的憑證.txt</p>
-<p>其實在 Wiki 上這五種都是物件，但是若是以物件的角度去看五種 Tese Double 很可能會在最後三種 Mock/Spy/Fake 搞混，因為這三種是可以重疊的，可以對 DOC 做 Mock 在做 SPY，模擬加上監控，也可以對 Fake 做 Mock 只取其中幾個邏輯做模擬，其他方法用簡單的邏輯實踐。</p>
-<h2 id="測試結果-JUnit-AssertJ-Mockito"><a href="#測試結果-JUnit-AssertJ-Mockito" class="headerlink" title="測試結果 (JUnit / AssertJ / Mockito)"></a>測試結果 (JUnit / AssertJ / Mockito)</h2><p>當測試環境，案例，Test double 的模擬方式都定義好了，需要確認這樣的情境下所執行的結果是不是如同我們的預期，藉此來驗證有效性。</p>
+<p>通常隔離的概念為建立 Test Double (測試替身), 而隔離的 DOC 因為被使用的功能主要分為兩類:</p>
+<p><strong>Dummy — 取代不在乎細節的物件</strong></p>
+<p>在實作時，有些物件只會關注數量，存不存在，其物件的內容並不會影響測試案例，此時就適合使用 Dummy 物件來取代，<br>減少建立原本物件的繁瑣操作。</p>
+<p><strong>Stub — 讓 DOC 提供 SUT 想要的 Input/Output 的物件</strong><br>Stub 則是與 Dummy 不同，實作的內容會影響到測試案例的結果，為了測試程式中不同的邏輯，<br>需要讓 Stub 物件設定輸出不同的值</p>
+<p>而產生測試替身的方法主要分為三種:</p>
+<p><strong>Mock — 都是假的</strong><br>由於 Stub 物件會影響我們的測試結果，故利用 Mock 的方式來模擬，<br>故需要設定我們輸入的值以及對應預期測試情境下要輸出的值來進行替換。</p>
+<p><strong>Spy — 監控 DOC 與 SUT 的互動</strong><br>Spy 主要功能為用來檢視 Mock 與 DOC 之間的交互作用。</p>
+<p><strong>Fake — 環境有限制我只好在寫一個</strong><br>其實有 Mock 和 SPY 方法在單元測試就涵蓋了 99% 的覆蓋了，而 Fake 就是真實寫一個簡單的邏輯取代原本得邏輯<br>(Mock 和 Spy 都是直接輸出需要的值 Fake 則要寫邏輯)，舉例：Database 的使用，在單元測試使用 H2 (In-memory database)<br>，或是在內網開發環境不能使用外網時，SSL 憑證檢查工具可以寫一個 Fake，改寫成去讀隨機以準備好在 Resource 的憑證.txt</p>
+<blockquote>
+<p>以上三種建立測試替身的方法是可以同時使用的，例如對 DOC 做 Mock 再做 SPY，模擬加上監控，<br>也可以對 Fake 做 Mock 只取其中幾個邏輯做模擬，其他方法用簡單的邏輯實踐。<br>請避免搞混 Mock / Spy / Fake 的概念。</p>
+</blockquote>
+<h2 id="測試結果-JUnit-AssertJ-Mockito"><a href="#測試結果-JUnit-AssertJ-Mockito" class="headerlink" title="測試結果 (JUnit / AssertJ / Mockito)"></a>測試結果 (JUnit / AssertJ / Mockito)</h2><p>當測試環境，案例，Test double 的模擬方式都定義好了，<br>需要確認這樣的情境下所執行的結果是不是如同我們的預期，藉此來驗證有效性。</p>
 <p><strong>測試結果通常會聚焦在三點:</strong></p>
 <ol>
 <li>待測目標 (SUT) 的輸出結果是否符合預期</li>
 <li>相依物件 (DOC) 是否有符合預期的被呼叫，而呼叫次數是否準確</li>
 <li>整個 Test Case 是否有涵蓋到完整的 SUT?</li>
 </ol>
-<p>前兩點，在 Java 會透過 JUnit / AssertJ / Mockito 協助完成，而第三點我們就要討論到 Unit Test 很重要的觀念，覆蓋率。</p>
-<p>覆蓋率就是單元測試執行結束後，SUT 有多少行程式碼有執行到，而執行到的程式碼 / 全部程式碼的百分比就是覆蓋率。而覆蓋率也細分了一些種類，這邊只列三個基本的介紹</p>
+<p>前兩點，在 Java 會透過 JUnit / AssertJ / Mockito 協助完成，<br>而第三點我們就要討論到 Unit Test 很重要的觀念，覆蓋率。</p>
+<p>覆蓋率就是單元測試執行結束後，SUT 有多少行程式碼有執行到，而執行到的程式碼 / 全部程式碼的百分比就是覆蓋率。<br>而覆蓋率也細分了一些種類，這邊只列三個基本的介紹</p>
 <ol>
 <li>Statement coverage — 程式碼每一行覆蓋</li>
 <li> Branch coverage — SUT 中的每個 if else 是不是都有進去過</li>
@@ -357,19 +360,16 @@
 <p>Branch 和 Condition 常常會搞混，直接看個範例</p>
 <figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (a &gt; b || b &gt; c) {</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">} <span class="keyword">else</span> {</span><br><span class="line">    <span class="comment">//do something</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
-<p>上面的程式碼，if 其實只要做到 a &gt; b 就可以進入，這是 Branch coverage，而 Condition Coverage 則是 a &gt; b || b &gt; c 的這兩個條件都要跑到過才能算是覆蓋成功。</p>
-<p>最常用的覆蓋率工具 (IDEA/JaCoCo 提供的覆蓋率) 其實沒有上面如此複雜，非常單純與直觀：</p>
+<p>上面的程式碼，if 其實只要做到 a &gt; b 就可以進入，這是 Branch coverage，<br>而 Condition Coverage 則是 a &gt; b || b &gt; c 的這兩個條件都要跑到過才能算是覆蓋成功。</p>
+<p>最常用的覆蓋率工具 (IDEA/JaCoCo) 在計算覆蓋率的部分其實沒有上面如此複雜，<br>白話文就是參考以下概念進行計算：</p>
 <ol>
 <li>Class - 系統裡多少 Class 被跑到</li>
 <li> Function - Class 裡多少 Function 被跑到</li>
 <li> Line - Function 裡多少程式被跑到</li>
 </ol>
-<h2 id="測試案例管理-JUnit-JaCoCo"><a href="#測試案例管理-JUnit-JaCoCo" class="headerlink" title="測試案例管理 (JUnit &amp; JaCoCo)"></a><strong>測試案例管理 (JUnit &amp; JaCoCo)</strong></h2><p>前面講的都是單元測試個體，這個環節討論的是群，當系統內的單元測試個體都跑完後，觀看整個系統的覆蓋率，以及更改功能後要跑哪些相關連的單元測試都包含在此。而良好 CI/CD 流程都是建立在完善的測試案例管理，監測覆蓋率，執行單元測試群體，這裡的實做也會在後面的系列文介紹，會包含如何將單元測試分組 (跑一組單元測試裡面的個體都會執行)，與如何使用 JaCoCo 產出覆蓋率報表。</p>
-<h2 id="單元測試常用工具介紹"><a href="#單元測試常用工具介紹" class="headerlink" title="單元測試常用工具介紹"></a><strong>單元測試常用工具介紹</strong></h2><ul>
-<li>JUnit - Java 單元測試的基礎，許多操作都是建立在此之上，包含 (Unit Test 的環境建立與結果檢驗)</li>
-<li>AssertJ - 是好用的結果檢驗工具，功能比 JUnit 原生的提供的還多</li>
-<li> Mockito - Test Double 建立的好夥伴，Mockito 讓開發者不用在自己寫 Test Double 的物件</li>
-<li> JaCoCo - 覆蓋率報告產生工具</li>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://medium.com/bucketing/java-test-1-%E5%96%AE%E5%85%83%E6%B8%AC%E8%A9%A6%E6%A6%82%E5%BF%B5%E7%AF%87-unit-test-c9c398c27d39">Java Test#1 單元測試概念篇</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://matthung0807.blogspot.com/search?q=%E6%B8%AC%E8%A9%A6">菜鳥工程師 - 肉豬 - 測試</a></li>
 </ul>
 
     </div>
