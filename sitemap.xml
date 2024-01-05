@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://yinghao1019.github.io/azure-queue/</loc>
+    
+    <lastmod>2024-01-05</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://yinghao1019.github.io/gcp-pubsub-gui/</loc>
     
     <lastmod>2024-01-05</lastmod>
@@ -38,6 +47,15 @@
   </url>
   
   <url>
+    <loc>https://yinghao1019.github.io/404</loc>
+    
+    <lastmod>2024-01-05</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://yinghao1019.github.io/about/</loc>
     
     <lastmod>2024-01-05</lastmod>
@@ -64,15 +82,6 @@
     <priority>0.6</priority>
   </url>
   
-  <url>
-    <loc>https://yinghao1019.github.io/404</loc>
-    
-    <lastmod>2024-01-05</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
 
   <url>
     <loc>https://yinghao1019.github.io/</loc>
@@ -83,7 +92,7 @@
 
   
   <url>
-    <loc>https://yinghao1019.github.io/tags/Message-Queue/</loc>
+    <loc>https://yinghao1019.github.io/tags/Queue/</loc>
     <lastmod>2024-01-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -91,6 +100,20 @@
   
   <url>
     <loc>https://yinghao1019.github.io/tags/Async/</loc>
+    <lastmod>2024-01-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yinghao1019.github.io/tags/Azure/</loc>
+    <lastmod>2024-01-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://yinghao1019.github.io/tags/Message-Queue/</loc>
     <lastmod>2024-01-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -111,6 +134,13 @@
   </url>
   
 
+  
+  <url>
+    <loc>https://yinghao1019.github.io/categories/Azure/</loc>
+    <lastmod>2024-01-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
   
   <url>
     <loc>https://yinghao1019.github.io/categories/GCP/</loc>

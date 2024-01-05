@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_hexo.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_hexo.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_hexo.ico">
+  <link rel="mask-icon" href="/images/favicon_hexo.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.css" integrity="sha256-6cQIC71/iBIYXFK+0RHAvwmjwWzkWd+r7v/BX3/vZDc=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yinghao1019.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"style":"flat","show_result":true},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Azure Queue Storage 適合用於儲存大量的訊息, 但又不會需要長期保存時的情境, 主要被應用在非同步的訊息交換, 由本篇文章帶你認識如何進行操作已及Queue的原理介紹。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Azure Queue Storage 介紹與操作">
+<meta property="og:url" content="https://yinghao1019.github.io/azure-queue/">
+<meta property="og:site_name" content="DuDuHow&#39;s Coding life">
+<meta property="og:description" content="Azure Queue Storage 適合用於儲存大量的訊息, 但又不會需要長期保存時的情境, 主要被應用在非同步的訊息交換, 由本篇文章帶你認識如何進行操作已及Queue的原理介紹。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://3.bp.blogspot.com/-bykMEF0qNHA/WwqssskmT4I/AAAAAAAAgJM/2ujpeckpHlskoBXWooE-Ry5lKaEJ8OuIACLcBGAs/s640/801.jpg">
+<meta property="og:image" content="c:\Users\Howard.YH.Hung\AppData\Roaming\Typora\typora-user-images\image-20240105162500590.png">
+<meta property="article:published_time" content="2024-01-05T03:46:58.000Z">
+<meta property="article:modified_time" content="2024-01-05T08:45:35.283Z">
+<meta property="article:author" content="DuDuHow">
+<meta property="article:tag" content="Queue">
+<meta property="article:tag" content="Async">
+<meta property="article:tag" content="Azure">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://3.bp.blogspot.com/-bykMEF0qNHA/WwqssskmT4I/AAAAAAAAgJM/2ujpeckpHlskoBXWooE-Ry5lKaEJ8OuIACLcBGAs/s640/801.jpg">
+
+
+<link rel="canonical" href="https://yinghao1019.github.io/azure-queue/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://yinghao1019.github.io/azure-queue/","path":"azure-queue/","title":"Azure Queue Storage 介紹與操作"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Azure Queue Storage 介紹與操作 | DuDuHow's Coding life</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0W303FRRFR"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-0W303FRRFR","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+<script src="https://kit.fontawesome.com/35821dbe4c.js" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0W303FRRFR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0W303FRRFR');
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DuDuHow's Coding life</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜尋" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa-regular fa-address-book fa-fw"></i>關於</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜尋
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜尋..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Azure-Queue-Storage"><span class="nav-number">2.1.</span> <span class="nav-text">Azure Queue Storage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%84%B2%E5%AD%98%E7%9A%84%E8%A8%8A%E6%81%AF"><span class="nav-number">2.2.</span> <span class="nav-text">儲存的訊息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%87%89%E7%94%A8%E6%99%82%E6%A9%9F"><span class="nav-number">3.</span> <span class="nav-text">應用時機</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%A6%E4%BD%9C%E4%BB%8B%E7%B4%B9"><span class="nav-number">4.</span> <span class="nav-text">實作介紹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A3%9C%E5%85%85%E8%AA%AA%E6%98%8E"><span class="nav-number">5.</span> <span class="nav-text">補充說明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">6.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DuDuHow" src="https://i.imgur.com/awk567A.jpg">
+  <p class="site-author-name" itemprop="name">DuDuHow</p>
+  <div class="site-description" itemprop="description">歡迎來到 DuDuHow 的程式人生</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yinghao1019" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yinghao1019" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:z112517z@gmail.com" title="E-Mail → mailto:z112517z@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+  <div class="links-of-blogroll motion-element links-of-blogroll-block">
+  <div class="links-of-blogroll-title">
+      <!-- 設定你要的fa fa icon-->
+      <i class="fa fa-history fa-" aria-hidden="true" style="margin: 1rem 0.25rem 0.5rem 0"></i>
+      Latest Posts
+  </div>
+  <ul class="links-of-blogroll-list">
+      <li>
+          <a href="/azure-queue/" title="Azure Queue Storage 介紹與操作" target="_blank">Azure Queue Storage 介紹與操作</a>
+      </li>
+      <li>
+          <a href="/gcp-pubsub-gui/" title="Google Cloud Pub/Sub Console 操作" target="_blank">Google Cloud Pub/Sub Console 操作</a>
+      </li>
+      <li>
+          <a href="/gcp-pubsub/" title="Google Cloud Pub/Sub 介紹" target="_blank">Google Cloud Pub/Sub 介紹</a>
+      </li>
+      <li>
+          <a href="/unit-test-basic/" title="學習單元測試 - 基本觀念" target="_blank">學習單元測試 - 基本觀念</a>
+      </li>
+  </ul>
+  </div>
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://yinghao1019.github.io/azure-queue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.imgur.com/awk567A.jpg">
+      <meta itemprop="name" content="DuDuHow">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DuDuHow's Coding life">
+      <meta itemprop="description" content="歡迎來到 DuDuHow 的程式人生">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Azure Queue Storage 介紹與操作 | DuDuHow's Coding life">
+      <meta itemprop="description" content="Azure Queue Storage 適合用於儲存大量的訊息, 但又不會需要長期保存時的情境, 主要被應用在非同步的訊息交換, 由本篇文章帶你認識如何進行操作已及Queue的原理介紹。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Azure Queue Storage 介紹與操作
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+      
+
+      <time title="創建時間：2024-01-05 11:46:58 / 修改時間：16:45:35" itemprop="dateCreated datePublished" datetime="2024-01-05T11:46:58+08:00">2024-01-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Azure/" itemprop="url" rel="index"><span itemprop="name">Azure</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/azure-queue/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="azure-queue/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+            <div class="post-description">Azure Queue Storage 適合用於儲存大量的訊息, 但又不會需要長期保存時的情境, 主要被應用在非同步的訊息交換, 由本篇文章帶你認識如何進行操作已及Queue的原理介紹。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Azure Queue Storage 適合用於儲存大量的訊息，但又不會需要長期保存時的情境，一個 Queus Storage 可以純存約百萬則訊息，</p>
+<p>存取訊息的方式支援 HTTP 與 HTTPS 。 如果要使用 Azure Queue Storage, 則需在 Azure Storage Account 中進行建立與管理。</p>
+<img data-src="https://3.bp.blogspot.com/-bykMEF0qNHA/WwqssskmT4I/AAAAAAAAgJM/2ujpeckpHlskoBXWooE-Ry5lKaEJ8OuIACLcBGAs/s640/801.jpg" alt="Azure Queue" style="zoom:67%;">
+
+<br>
+
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><h3 id="Azure-Queue-Storage"><a href="#Azure-Queue-Storage" class="headerlink" title="Azure Queue Storage"></a><strong>Azure Queue Storage</strong></h3><ul>
+<li>FIFO : 先儲存的會優先被取出來處理，但由於是軟刪除，所以發生 concurrency 不一定會保持此特性</li>
+<li>每一筆訊息最大容量為 64 KB , 儲存期限為 7 天</li>
+<li>一個 queue 可容納 500TB 的資訊</li>
+<li>易於與 Azure 其他服務整合，擴張 (Azure Function)</li>
+<li> 支援 HTTP ,HTTPS 通訊協定存取</li>
+</ul>
+<h3 id="儲存的訊息"><a href="#儲存的訊息" class="headerlink" title="儲存的訊息"></a><strong>儲存的訊息</strong></h3><ul>
+<li>可以是 UTF -8 字串 或是 二進位制 (Byte Arrays) 的格式</li>
+<li> XML 文件，CSV ,TSV 檔案等</li>
+</ul>
+<br>
+
+<h2 id="應用時機"><a href="#應用時機" class="headerlink" title="應用時機"></a>應用時機</h2><p><img data-src="C:\Users\Howard.YH.Hung\AppData\Roaming\Typora\typora-user-images\image-20240105162500590.png" alt="image-20240105162500590"></p>
+<p>主要被應用在於非即時回應的非同步處理，想降低不同系統之間的耦合性，或是做為後端伺服器的系統緩衝。</p>
+<ul>
+<li>Email , SMS 的訊息發送</li>
+<li>後端 Server 紀錄 Log 資料的管道</li>
+<li>微服務系統之間的溝通橋樑</li>
+</ul>
+<br>
+
+<h2 id="實作介紹"><a href="#實作介紹" class="headerlink" title="實作介紹"></a>實作介紹</h2><p>因為筆者主要使用 Java 開發，接下來 Queue 的實作皆會已 Java 語法進行介紹常用的操作:</p>
+<ol>
+<li>Storage Account 建立 Queue</li>
+<li> 設定 Queue 連線與授權資訊</li>
+<li>傳送訊息至 Queue</li>
+<li> 取出 Queue 中的訊息</li>
+<li>更新 Queue 的訊息</li>
+<li>刪除 Queue 的訊息</li>
+<li>計算 Queue 中訊息的數量</li>
+<li> Queue 的例外處理</li>
+</ol>
+<br>
+
+<ol>
+<li> Storage Account 建立 Queue</li>
+</ol>
+<p>   登入 Azure Portal 後，選擇 Storage Account , 點選側邊欄的 Queue 後按上面的 + 進行新增</p>
+   <img data-src alt="queue operation" style="zoom: 67%;">
+
+<ol start="2">
+<li><p>設定 Queue 連線與授權資訊</p>
+<p>設定 Queue 服務的 url 與認證方式，認證方式主要有三種 (分別為 SAS Token , Connection String , Storage Account Key) , </p>
+<p>取得認證資訊方式可參考官方文件 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://learn.microsoft.com/en-us/java/api/overview/azure/storage-queue-readme?view=azure-java-stable#enqueue-message-into-a-queue">Authenticate the client</a> </p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">queueURL</span> <span class="operator">=</span> String.format(<span class="string">"https://%s.queue.core.windows.net/%s"</span>, ACCOUNT_NAME, queueName);</span><br><span class="line"><span class="type">QueueClient</span> <span class="variable">queueClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">QueueClientBuilder</span>().endpoint(queueURL).sasToken(SAS_TOKEN).buildClient();</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>傳送訊息至 Queue</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">queueURL</span> <span class="operator">=</span> String.format(<span class="string">"https://%s.queue.core.windows.net"</span>, ACCOUNT_NAME);</span><br><span class="line"><span class="type">QueueClient</span> <span class="variable">queueClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">QueueClientBuilder</span>().endpoint(queueURL).sasToken(SAS_TOKEN).queueName(<span class="string">"myqueue"</span>)</span><br><span class="line">        .buildClient();</span><br><span class="line"></span><br><span class="line">queueClient.sendMessage(<span class="string">"myMessage"</span>);</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>取出 Queue 中的訊息</p>
+<p>取出 Queue 的 Message 有提供其他額外參數設定，由以下多做說明:</p>
+<ul>
+<li>maxMessages: 批次從 queue 中取出訊息的最大數量 。最大為 32 筆，超過設定會出現 exception </li>
+<li>visibilityTimeout: 取出後隔多少時間才能再次看到該 Message, 預設為 30 秒</li>
+<li> timeout: 與 queue 連線多久沒回應的時效限制</li>
+<li> context: 使用服務前，需要額外新增近 Http Pipeline 的資訊 </li>
+</ul>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">queueURL</span> <span class="operator">=</span> String.format(<span class="string">"https://%s.queue.core.windows.net"</span>, ACCOUNT_NAME);</span><br><span class="line"><span class="type">QueueClient</span> <span class="variable">queueClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">QueueClientBuilder</span>().endpoint(queueURL).sasToken(SAS_TOKEN).queueName(<span class="string">"myqueue"</span>)</span><br><span class="line">        .buildClient();</span><br><span class="line">queueClient.receiveMessages(<span class="number">10</span>).forEach(message -&gt;</span><br><span class="line">    System.out.println(message.getBody().toString()));</span><br></pre></td></tr></tbody></table></figure>
+
+
+</li>
+<li><p>更新 Queue 的訊息</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @param messageId: Message 的Id</span></span><br><span class="line"><span class="comment">// @param popReceipt: 用於辨識哪個Message 要被更新</span></span><br><span class="line"><span class="comment">// @param visibilityTimeout: 更新後多久才能再看到</span></span><br><span class="line">queueClient.updateMessage(messageId, popReceipt, <span class="string">"new message"</span>, visibilityTimeout);</span><br></pre></td></tr></tbody></table></figure>
+
+
+</li>
+<li><p>刪除 Queue 的訊息</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">queueURL</span> <span class="operator">=</span> String.format(<span class="string">"https://%s.queue.core.windows.net"</span>, ACCOUNT_NAME);</span><br><span class="line"><span class="type">QueueClient</span> <span class="variable">queueClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">QueueClientBuilder</span>().endpoint(queueURL).sasToken(SAS_TOKEN).queueName(<span class="string">"myqueue"</span>)</span><br><span class="line">        .buildClient();</span><br><span class="line"></span><br><span class="line">queueClient.deleteMessage(messageId, popReceipt);</span><br></pre></td></tr></tbody></table></figure>
+
+
+</li>
+<li><p>計算 Queue 中訊息的數量</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">QueueClient</span> <span class="variable">queueClient</span> <span class="operator">=</span></span><br><span class="line">        QueueUtils.createQueueClient(queueName, QueueUtils.getDefaultConnString());</span><br><span class="line">queueClient.getProperties().getApproximateMessagesCount();</span><br></pre></td></tr></tbody></table></figure>
+
+
+</li>
+<li><p>Queue 的例外處理</p>
+<p>Azure SDK 有提供額外的 Error Code 讓開發人員進行處理，詳情請見 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://learn.microsoft.com/en-us/rest/api/storageservices/queue-service-error-codes">Queue Storage error codes</a></p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">queueServiceURL</span> <span class="operator">=</span> String.format(<span class="string">"https://%s.queue.core.windows.net"</span>, ACCOUNT_NAME);</span><br><span class="line"><span class="type">QueueServiceClient</span> <span class="variable">queueServiceClient</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">QueueServiceClientBuilder</span>().endpoint(queueServiceURL)</span><br><span class="line">    .sasToken(SAS_TOKEN).buildClient();</span><br><span class="line"><span class="keyword">try</span> {</span><br><span class="line">    queueServiceClient.createQueue(<span class="string">"myQueue"</span>);</span><br><span class="line">} <span class="keyword">catch</span> (QueueStorageException e) {</span><br><span class="line">    logger.error(<span class="string">"Failed to create a queue with error code: "</span> + e.getErrorCode());</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<br>
+
+<h2 id="補充說明"><a href="#補充說明" class="headerlink" title="補充說明"></a>補充說明</h2><p>除了 Azure Queue Storage , 微軟雲端有再推出另外一種 Queue 型態的服務 - Azure Service Bus 。相較於 Queue Storage , Service Bus 的功能與 Rabbit MQ , Kafaka , GCP PubSub  較為類似，比較偏向 Producer - Consumer 的架構，所以如果希望要較為即時的非同步處理功能，請珍惜生命，不要走錯棚！</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://dog0416.blogspot.com/2018/05/azure-azure-queue-storage.html">Azure Queue Storage 介紹與操作</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://ithelp.ithome.com.tw/articles/10205084">Azure Queue Storage 介紹 - IT 幫幫忙</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://learn.microsoft.com/en-us/java/api/overview/azure/storage-queue-readme?view=azure-java-stable#enqueue-message-into-a-queue">Azure Storage Queue client library for Java</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Queue/" rel="tag"><i class="fa fa-tag"></i> Queue</a>
+              <a href="/tags/Async/" rel="tag"><i class="fa fa-tag"></i> Async</a>
+              <a href="/tags/Azure/" rel="tag"><i class="fa fa-tag"></i> Azure</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/gcp-pubsub-gui/" rel="prev" title="Google Cloud Pub/Sub Console 操作">
+                  <i class="fa fa-angle-left"></i> Google Cloud Pub/Sub Console 操作
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-regular fa-closed-captioning"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Howard - 轉載文章請附上原文連結</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.umd.js" integrity="sha256-ytMJGN3toR+a84u7g7NuHm91VIR06Q41kMWDr2pq7Zo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"duduhow","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>
