@@ -18,7 +18,7 @@ Azure Queue Storage 適合用於儲存大量的訊息, 但又不會需要長期�
 
 存取訊息的方式支援HTTP 與HTTPS 。 如果要使用Azure Queue Storage, 則需在Azure Storage Account中進行建立與管理。
 
-<img src="https://3.bp.blogspot.com/-bykMEF0qNHA/WwqssskmT4I/AAAAAAAAgJM/2ujpeckpHlskoBXWooE-Ry5lKaEJ8OuIACLcBGAs/s640/801.jpg" alt="Azure Queue" style="zoom:67%;" />
+![Azure Queue](https://3.bp.blogspot.com/-bykMEF0qNHA/WwqssskmT4I/AAAAAAAAgJM/2ujpeckpHlskoBXWooE-Ry5lKaEJ8OuIACLcBGAs/s640/801.jpg)
 
 <br/>
 
@@ -41,7 +41,7 @@ Azure Queue Storage 適合用於儲存大量的訊息, 但又不會需要長期�
 
 ## 應用時機
 
-![image-20240105162500590](C:\Users\Howard.YH.Hung\AppData\Roaming\Typora\typora-user-images\image-20240105162500590.png)
+![image-20240105162500590](https://i.imgur.com/TjyUGl1.jpg)
 
 
 
@@ -72,7 +72,7 @@ Azure Queue Storage 適合用於儲存大量的訊息, 但又不會需要長期�
 
    登入Azure Portal 後, 選擇Storage Account , 點選側邊欄的Queue 後按上面的 + 進行新增
 
-   <img src="" alt="queue operation" style="zoom: 67%;" />
+   <img src="https://i.imgur.com/gTzIb8f.png" alt="azure-portal" style="zoom:67%;" />
 
 2. 設定Queue 連線與授權資訊
 
