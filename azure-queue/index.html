@@ -30,9 +30,10 @@
 <meta property="og:description" content="Azure Queue Storage 適合用於儲存大量的訊息, 但又不會需要長期保存時的情境, 主要被應用在非同步的訊息交換, 由本篇文章帶你認識如何進行操作已及Queue的原理介紹。">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:image" content="https://3.bp.blogspot.com/-bykMEF0qNHA/WwqssskmT4I/AAAAAAAAgJM/2ujpeckpHlskoBXWooE-Ry5lKaEJ8OuIACLcBGAs/s640/801.jpg">
-<meta property="og:image" content="c:\Users\Howard.YH.Hung\AppData\Roaming\Typora\typora-user-images\image-20240105162500590.png">
+<meta property="og:image" content="https://i.imgur.com/TjyUGl1.jpg">
+<meta property="og:image" content="https://i.imgur.com/gTzIb8f.png">
 <meta property="article:published_time" content="2024-01-05T03:46:58.000Z">
-<meta property="article:modified_time" content="2024-01-05T08:45:35.283Z">
+<meta property="article:modified_time" content="2024-01-05T16:07:50.071Z">
 <meta property="article:author" content="DuDuHow">
 <meta property="article:tag" content="Queue">
 <meta property="article:tag" content="Async">
@@ -266,9 +267,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">發表於</span>
-      
 
-      <time title="創建時間：2024-01-05 11:46:58 / 修改時間：16:45:35" itemprop="dateCreated datePublished" datetime="2024-01-05T11:46:58+08:00">2024-01-05</time>
+      <time title="創建時間：2024-01-05 11:46:58" itemprop="dateCreated datePublished" datetime="2024-01-05T11:46:58+08:00">2024-01-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新於</span>
+      <time title="修改時間：2024-01-06 00:07:50" itemprop="dateModified" datetime="2024-01-06T00:07:50+08:00">2024-01-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -306,8 +313,7 @@
     
     <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Azure Queue Storage 適合用於儲存大量的訊息，但又不會需要長期保存時的情境，一個 Queus Storage 可以純存約百萬則訊息，</p>
 <p>存取訊息的方式支援 HTTP 與 HTTPS 。 如果要使用 Azure Queue Storage, 則需在 Azure Storage Account 中進行建立與管理。</p>
-<img data-src="https://3.bp.blogspot.com/-bykMEF0qNHA/WwqssskmT4I/AAAAAAAAgJM/2ujpeckpHlskoBXWooE-Ry5lKaEJ8OuIACLcBGAs/s640/801.jpg" alt="Azure Queue" style="zoom:67%;">
-
+<p><img data-src="https://3.bp.blogspot.com/-bykMEF0qNHA/WwqssskmT4I/AAAAAAAAgJM/2ujpeckpHlskoBXWooE-Ry5lKaEJ8OuIACLcBGAs/s640/801.jpg" alt="Azure Queue"></p>
 <br>
 
 <h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><h3 id="Azure-Queue-Storage"><a href="#Azure-Queue-Storage" class="headerlink" title="Azure Queue Storage"></a><strong>Azure Queue Storage</strong></h3><ul>
@@ -323,7 +329,7 @@
 </ul>
 <br>
 
-<h2 id="應用時機"><a href="#應用時機" class="headerlink" title="應用時機"></a>應用時機</h2><p><img data-src="C:\Users\Howard.YH.Hung\AppData\Roaming\Typora\typora-user-images\image-20240105162500590.png" alt="image-20240105162500590"></p>
+<h2 id="應用時機"><a href="#應用時機" class="headerlink" title="應用時機"></a>應用時機</h2><p><img data-src="https://i.imgur.com/TjyUGl1.jpg" alt="image-20240105162500590"></p>
 <p>主要被應用在於非即時回應的非同步處理，想降低不同系統之間的耦合性，或是做為後端伺服器的系統緩衝。</p>
 <ul>
 <li>Email , SMS 的訊息發送</li>
@@ -349,7 +355,7 @@
 <li> Storage Account 建立 Queue</li>
 </ol>
 <p>   登入 Azure Portal 後，選擇 Storage Account , 點選側邊欄的 Queue 後按上面的 + 進行新增</p>
-   <img data-src alt="queue operation" style="zoom: 67%;">
+   <img data-src="https://i.imgur.com/gTzIb8f.png" alt="azure-portal" style="zoom:67%;">
 
 <ol start="2">
 <li><p>設定 Queue 連線與授權資訊</p>
