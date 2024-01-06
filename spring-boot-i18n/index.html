@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_hexo.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_hexo.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_hexo.ico">
+  <link rel="mask-icon" href="/images/favicon_hexo.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.css" integrity="sha256-6cQIC71/iBIYXFK+0RHAvwmjwWzkWd+r7v/BX3/vZDc=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yinghao1019.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"style":"flat","show_result":true},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="開發人員有可能會碰到需要開發多國語言的專案 , 透過不同語系的方式來提升使用者操作體驗。故本篇文章介紹了對於Spring Boot 人員如何進行設定與使用 i18n 套件來實現多語言的專案">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot i18n 國際化設定">
+<meta property="og:url" content="https://yinghao1019.github.io/spring-boot-i18n/">
+<meta property="og:site_name" content="DuDuHow&#39;s Coding life">
+<meta property="og:description" content="開發人員有可能會碰到需要開發多國語言的專案 , 透過不同語系的方式來提升使用者操作體驗。故本篇文章介紹了對於Spring Boot 人員如何進行設定與使用 i18n 套件來實現多語言的專案">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://i.imgur.com/e3HHl7o.png">
+<meta property="article:published_time" content="2024-01-05T08:49:27.000Z">
+<meta property="article:modified_time" content="2024-01-06T02:24:17.603Z">
+<meta property="article:author" content="DuDuHow">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring Boot">
+<meta property="article:tag" content="i18n">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgur.com/e3HHl7o.png">
+
+
+<link rel="canonical" href="https://yinghao1019.github.io/spring-boot-i18n/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://yinghao1019.github.io/spring-boot-i18n/","path":"spring-boot-i18n/","title":"SpringBoot i18n 國際化設定"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SpringBoot i18n 國際化設定 | DuDuHow's Coding life</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0W303FRRFR"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-0W303FRRFR","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+<script src="https://kit.fontawesome.com/35821dbe4c.js" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0W303FRRFR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0W303FRRFR');
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DuDuHow's Coding life</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜尋" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa-regular fa-address-book fa-fw"></i>關於</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜尋
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜尋..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%AA%9E%E7%B3%BB%E7%B6%B2%E7%AB%99%E7%9A%84%E5%A5%BD%E8%99%95"><span class="nav-number">1.1.</span> <span class="nav-text">多語系網站的好處</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Boot-%E5%A4%9A%E8%AA%9E%E7%B3%BB%E4%BB%8B%E7%B4%B9-%E7%92%B0%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">Spring Boot 多語系介紹，環境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%97%E4%BB%B6%E5%AE%89%E8%A3%9D"><span class="nav-number">1.3.</span> <span class="nav-text">套件安裝</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%B5%B1%E8%A8%AD%E5%AE%9A"><span class="nav-number">2.</span> <span class="nav-text">系統設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9AMessage-Source-%E8%AE%80%E5%8F%96%E4%BD%8D%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">設定 Message Source 讀取位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A%E8%A7%A3%E6%9E%90%E5%99%A8-Resolver-%E8%88%87%E6%94%94%E6%88%AA%E5%99%A8-Interceptor"><span class="nav-number">2.2.</span> <span class="nav-text"> 設定解析器 (Resolver) 與攔截器 (Interceptor)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%80%E5%8F%96Locale-Message"><span class="nav-number">3.</span> <span class="nav-text">讀取 Locale Message</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Message-%E5%8F%83%E6%95%B8%E5%8C%96"><span class="nav-number">3.1.</span> <span class="nav-text">Message 參數化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E6%88%90%E5%85%B1%E7%94%A8%E5%85%83%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">建立成共用元件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DuDuHow" src="https://i.imgur.com/awk567A.jpg">
+  <p class="site-author-name" itemprop="name">DuDuHow</p>
+  <div class="site-description" itemprop="description">歡迎來到 DuDuHow 的程式人生</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yinghao1019" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yinghao1019" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:z112517z@gmail.com" title="E-Mail → mailto:z112517z@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+  <div class="links-of-blogroll motion-element links-of-blogroll-block">
+  <div class="links-of-blogroll-title">
+      <!-- 設定你要的fa fa icon-->
+      <i class="fa fa-history fa-" aria-hidden="true" style="margin: 1rem 0.25rem 0.5rem 0"></i>
+      Latest Posts
+  </div>
+  <ul class="links-of-blogroll-list">
+      <li>
+          <a href="/spring-boot-i18n/" title="SpringBoot i18n 國際化設定" target="_blank">SpringBoot i18n 國際化設定</a>
+      </li>
+      <li>
+          <a href="/azure-queue/" title="Azure Queue Storage 介紹與操作" target="_blank">Azure Queue Storage 介紹與操作</a>
+      </li>
+      <li>
+          <a href="/gcp-pubsub-gui/" title="Google Cloud Pub/Sub Console 操作" target="_blank">Google Cloud Pub/Sub Console 操作</a>
+      </li>
+      <li>
+          <a href="/gcp-pubsub/" title="Google Cloud Pub/Sub 介紹" target="_blank">Google Cloud Pub/Sub 介紹</a>
+      </li>
+      <li>
+          <a href="/unit-test-basic/" title="學習單元測試 - 基本觀念" target="_blank">學習單元測試 - 基本觀念</a>
+      </li>
+  </ul>
+  </div>
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://yinghao1019.github.io/spring-boot-i18n/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.imgur.com/awk567A.jpg">
+      <meta itemprop="name" content="DuDuHow">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DuDuHow's Coding life">
+      <meta itemprop="description" content="歡迎來到 DuDuHow 的程式人生">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="SpringBoot i18n 國際化設定 | DuDuHow's Coding life">
+      <meta itemprop="description" content="開發人員有可能會碰到需要開發多國語言的專案 , 透過不同語系的方式來提升使用者操作體驗。故本篇文章介紹了對於Spring Boot 人員如何進行設定與使用 i18n 套件來實現多語言的專案">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SpringBoot i18n 國際化設定
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2024-01-05 16:49:27" itemprop="dateCreated datePublished" datetime="2024-01-05T16:49:27+08:00">2024-01-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新於</span>
+      <time title="修改時間：2024-01-06 10:24:17" itemprop="dateModified" datetime="2024-01-06T10:24:17+08:00">2024-01-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring-Boot/" itemprop="url" rel="index"><span itemprop="name">Spring Boot</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/spring-boot-i18n/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="spring-boot-i18n/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+            <div class="post-description">開發人員有可能會碰到需要開發多國語言的專案 , 透過不同語系的方式來提升使用者操作體驗。故本篇文章介紹了對於Spring Boot 人員如何進行設定與使用 i18n 套件來實現多語言的專案</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h3 id="多語系網站的好處"><a href="#多語系網站的好處" class="headerlink" title="多語系網站的好處"></a><strong>多語系網站的好處</strong></h3><p>在網路世界裡，使用者沒辦法親眼看到公司實際的樣子，官網就是一個形象的展現，網站有不同的語系除了更顯國際化，頁面的瀏覽上也顯得更親切；<br>對很多人來說，使用自己不熟悉的語言，會感覺陌生，容易產生不信任感。若能讓潛在客戶使用自己語言瀏覽網站，也能讓訪客覺得這家公司是一間相當有規模的公司，提高在網站上的體驗，也有機會提高轉化率。</p>
+<h3 id="Spring-Boot-多語系介紹-環境配置"><a href="#Spring-Boot-多語系介紹-環境配置" class="headerlink" title="Spring Boot 多語系介紹, 環境配置"></a>Spring Boot 多語系介紹，環境配置</h3><p>Spring Boot 自動配置 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/MessageSource.html">MessageSource</a> 做 i18n 多國語言訊息，不用再自己配置 <code>MessageSource</code> 的 bean 且預設會尋找 classpath 根目錄下名稱為 messages 的 properties 作為訊息來源。 如果想要使用其他名稱或路徑，可在 Spring Boot 配置檔 application.properties 設定。</p>
+<h3 id="套件安裝"><a href="#套件安裝" class="headerlink" title="套件安裝"></a>套件安裝</h3><p>springBoot 對 i18n 的支援是含在 <code>spring-context-support</code> 裡的，因此僅需引用 <em>web-starter</em>  模組，不需要再額外引用其他的 <code>xxx - starter</code></p>
+<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">implementation</span> <span class="string">'org.springframework.boot:spring-boot-starter-web'</span></span><br></pre></td></tr></tbody></table></figure>
+
+<br>
+
+<h2 id="系統設定"><a href="#系統設定" class="headerlink" title="系統設定"></a>系統設定</h2><ol>
+<li><h3 id="設定Message-Source-讀取位置"><a href="#設定Message-Source-讀取位置" class="headerlink" title="設定Message Source 讀取位置"></a>設定 Message Source 讀取位置</h3><p>在 spring boot 中，需要在 properties 設定讀取建立的 Message 檔案路徑位置 。</p>
+<p>application.properties</p>
+<figure class="highlight properties"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring.messages.basename</span>=<span class="string">i18n/messages</span></span><br><span class="line"><span class="attr">spring.messages.encoding</span>=<span class="string">UTF-8</span></span><br><span class="line"><span class="attr">spring.messages.cache-duration</span>=<span class="string">3600</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>預設會是 basename 代表語系檔的路徑以及檔名，依照這裡的設定須將語系檔放在 resource/i18n 之下，且命名為 message.properties</p>
+<ul>
+<li>message_zh_TW . properties</li>
+<li>message_en_US . properties</li>
+<li>message.properties</li>
+</ul>
+</li>
+</ol>
+<p><img data-src="https://i.imgur.com/e3HHl7o.png"></p>
+<ol start="2">
+<li><h3 id="設定解析器-Resolver-與攔截器-Interceptor"><a href="#設定解析器-Resolver-與攔截器-Interceptor" class="headerlink" title="設定解析器(Resolver)與攔截器 (Interceptor)"></a> 設定解析器 (Resolver) 與攔截器 (Interceptor)</h3><p>如果不想使用用設的 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/context/MessageSourceAutoConfiguration.java"><em>MessageSourceAutoConfiguration</em></a>  。  </p>
+<p>可以自行客製化設定解析語系名稱的清單，語系暫存的位置 以及要如何切換語系的方法</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LocaleConfig</span> {</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> ReloadableResourceBundleMessageSource <span class="title function_">messageSource</span><span class="params">()</span> {</span><br><span class="line">        <span class="type">ReloadableResourceBundleMessageSource</span> <span class="variable">messageSource</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReloadableResourceBundleMessageSource</span>();</span><br><span class="line">        messageSource.setBasename(<span class="string">"classpath:i18n/messages"</span>);</span><br><span class="line">        messageSource.setDefaultEncoding(<span class="string">"UTF-8"</span>);</span><br><span class="line">        messageSource.setCacheSeconds(<span class="number">3600</span>); <span class="comment">// Cache for an hour</span></span><br><span class="line">        <span class="keyword">return</span> messageSource;</span><br><span class="line">    }</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Spring Boot 預設採用 AcceptHeader Resolver</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> LocaleResolver <span class="title function_">localeResolver</span><span class="params">()</span> {</span><br><span class="line">        <span class="comment">// 設定支援的 Locales，若 Accept-Language 沒設定或不在這清單內就會使用預設的 Locale</span></span><br><span class="line">        List&lt;Locale&gt; supportedLocales = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        supportedLocales.add(Locale.TAIWAN);</span><br><span class="line">        supportedLocales.add(Locale.ENGLISH);</span><br><span class="line"></span><br><span class="line">        <span class="type">AcceptHeaderLocaleResolver</span> <span class="variable">acceptHeaderLocaleResolver</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AcceptHeaderLocaleResolver</span>();</span><br><span class="line">        acceptHeaderLocaleResolver.setDefaultLocale(Locale.TAIWAN); <span class="comment">// 預設 Locale</span></span><br><span class="line">        acceptHeaderLocaleResolver.setSupportedLocales(supportedLocales);</span><br><span class="line">        <span class="keyword">return</span> acceptHeaderLocaleResolver;</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 默認攔截器 客製化設定切換語系時的參數名.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> LocaleChangeInterceptor <span class="title function_">localeChangeInterceptor</span><span class="params">()</span> {</span><br><span class="line">        <span class="type">LocaleChangeInterceptor</span> <span class="variable">lci</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">LocaleChangeInterceptor</span>();</span><br><span class="line">        lci.setParamName(<span class="string">"lang"</span>);</span><br><span class="line">        <span class="keyword">return</span> lci;</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span>{</span><br><span class="line">        registry.addInterceptor(localeChangeInterceptor());</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<br>
+
+<p>程式中是使用 AcceptHeaderLocaleResolver 來提取當前 Client 想用的語系，其實還有其他常見的解析方式</p>
+<table>
+<thead>
+<tr>
+<th>Locale Resolver</th>
+<th> 說明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong> CookieLocaleResolver</strong></td>
+<td> 將使用者的語系偏好資料暫存於 瀏覽器的 Cookie 中</td>
+</tr>
+<tr>
+<td><strong> SessionLocaleResolver</strong></td>
+<td> 將使用者的語系偏好資料暫存於 Session 中</td>
+</tr>
+<tr>
+<td><strong> FixedLocaleResolver</strong></td>
+<td> 固定當前的語系，不會依照使用者設定的語系偏好改變，用於 Debug</td>
+</tr>
+</tbody></table>
+<br></li>
+</ol>
+<h2 id="讀取Locale-Message"><a href="#讀取Locale-Message" class="headerlink" title="讀取Locale Message"></a>讀取 Locale Message</h2><p>當設定完成後，若要在程式讀取設定的訊息，可注入 <code>MessageSource</code> 的資源，透過 key 值去對應訊息，</p>
+<p>如果後面帶入的語系不存在就會用預設的 message.properties 內容</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DemoController</span> {</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> MessageSource messageSource;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserDao userDao;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping("/{userId}")</span></span><br><span class="line">    <span class="meta">@ResponseStatus(HttpStatus.OK)</span></span><br><span class="line">    <span class="keyword">public</span> User <span class="title function_">getOneUser</span><span class="params">(<span class="meta">@PathVariable("userId")</span> Long userId)</span> <span class="keyword">throws</span> Exception {</span><br><span class="line">        Optional&lt;User&gt; userOption = userDao.findById(userId);</span><br><span class="line">        <span class="keyword">if</span> (userOption.isEmpty()) {</span><br><span class="line">            <span class="type">String</span> <span class="variable">msg</span> <span class="operator">=</span> messageSource.getMessage(</span><br><span class="line">                <span class="string">"user.controller.not.found.by.id"</span>,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">String</span>[]{userId.toString()},</span><br><span class="line">                Locale.TAIWAN);</span><br><span class="line">            log.error(msg);</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> userOption.get();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>上面的範例是直接寫入 Locale.TAIWAN 來套用語系，實際情境下通常是透過 API 帶入語系參數來決定訊息的語系，</p>
+<p>因此可以改寫成</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @param code: 設定要取Message 的Key</span></span><br><span class="line"><span class="comment">// @param args: 作為變數替換Message 中的區塊</span></span><br><span class="line"><span class="comment">// @param Locale: 讀取Message 的語系檔</span></span><br><span class="line"><span class="type">String</span> <span class="variable">msg</span> <span class="operator">=</span> messageSource.getMessage(<span class="string">"user.controller.not.found.by.id"</span>,</span><br><span class="line">                                      <span class="keyword">new</span> <span class="title class_">String</span>[]{userId.toString()}, LocaleContextHolder.getLocale())</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>LocaleContextHolder.getLocale()</code> 會從 request 的 header 欄位 Accept-Language 來解析語系。</p>
+<p>如果語系找不到會先抓主機的預設語系，若預設語系也不存在才會去抓 <code>message.properties</code></p>
+<h3 id="Message-參數化"><a href="#Message-參數化" class="headerlink" title="Message 參數化"></a><strong>Message 參數化</strong></h3><p>Message 支援帶入程式的變數來動態替換訊息，在訊息來源檔中的要嵌入的變數位置，將變數傳入至 <code>MessageSource.getMessage()</code> 的第二個參數做替換</p>
+<figure class="highlight properties"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">demo.message</span>=<span class="string">MessageSource自動配置</span></span><br><span class="line"><span class="attr">demo.message.args</span>=<span class="string">帶參數的訊息，參數0={0}, 參數1={1}</span></span><br></pre></td></tr></tbody></table></figure>
+
+<br>
+
+<h2 id="建立成共用元件"><a href="#建立成共用元件" class="headerlink" title="建立成共用元件"></a>建立成共用元件</h2><p>使用原生的語法來取 message 比較不方便，而且而且語系的參數基本上就是帶入 <code>LocaleContextHolder.getLocale()</code>。 </p>
+<p>因此將使用 <code>MessageSource</code> 的邏輯封裝成 Utils 來簡化程式碼</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LocaleUtils</span> {</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> MessageSource messageSource;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">LocaleUtils</span><span class="params">()</span> {</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">setMessageSource</span><span class="params">(MessageSource messageSource)</span> {</span><br><span class="line">        LocaleUtils.messageSource = messageSource;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">get</span><span class="params">(String msgKey)</span> {</span><br><span class="line">        <span class="keyword">return</span> LocaleUtils.get(msgKey, (Object) <span class="literal">null</span>);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">get</span><span class="params">(String msgKey, Object... args)</span> {</span><br><span class="line">        <span class="keyword">try</span> {</span><br><span class="line">            <span class="keyword">return</span> messageSource.getMessage(msgKey, args, getLocale());</span><br><span class="line">        } <span class="keyword">catch</span> (Exception e) {</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">InternalServerErrorException</span>(<span class="string">"翻譯失敗:"</span> + msgKey + <span class="string">", "</span> + e.getMessage());</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> MessageDTO <span class="title function_">getMessage</span><span class="params">(String msgKey)</span> {</span><br><span class="line">        <span class="keyword">return</span> LocaleUtils.getMessage(msgKey, (Object) <span class="literal">null</span>);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> MessageDTO <span class="title function_">getMessage</span><span class="params">(String msgKey, Object... args)</span> {</span><br><span class="line">        <span class="type">MessageDTO</span> <span class="variable">messageDTO</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MessageDTO</span>();</span><br><span class="line">        messageDTO.setMessage(LocaleUtils.get(msgKey, args, getLocale()));</span><br><span class="line">        <span class="keyword">return</span> messageDTO;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Locale <span class="title function_">getLocale</span><span class="params">()</span> {</span><br><span class="line">        <span class="keyword">return</span> LocaleContextHolder.getLocale();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://bingdoal.github.io/backend/2021/12/i18n-internationalization-in-spring-boot/">Spring boot 的 I18n 設定與進一步包裝</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.tpisoftware.com/tpu/articleDetails/2347">Spring Boot 快速配置多語系 (國際化)</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://matthung0807.blogspot.com/2020/06/spring-boot-messagesource-i18n-example.html">Spring Boot MessageSource i18n 範例</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://polinwei.com/spring-boot-i18n/">Spring Boot 多語系設置 (i18n – 國際化)</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://matthung0807.blogspot.com/2020/06/spring-boot-messagesource-auto-config.html">Spring Boot MessageSource 自動配置</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.baeldung.com/spring-boot-internationalization">Guide to Internationalization in Spring Boot |Baledung</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://reflectoring.io/spring-boot-internationalization/">How to Internationalize a Spring Boot Application</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://lokalise.com/blog/spring-boot-internationalization/">Spring Boot internationalization i18n: Step-by-step with examples</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://howtodoinjava.com/spring-boot/rest-i18n-example/">Spring Boot REST: Internationalization (i18n) Example</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+              <a href="/tags/Spring-Boot/" rel="tag"><i class="fa fa-tag"></i> Spring Boot</a>
+              <a href="/tags/i18n/" rel="tag"><i class="fa fa-tag"></i> i18n</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/azure-queue/" rel="prev" title="Azure Queue Storage 介紹與操作">
+                  <i class="fa fa-angle-left"></i> Azure Queue Storage 介紹與操作
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-regular fa-closed-captioning"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Howard - 轉載文章請附上原文連結</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.umd.js" integrity="sha256-ytMJGN3toR+a84u7g7NuHm91VIR06Q41kMWDr2pq7Zo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"duduhow","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>
