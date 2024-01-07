@@ -5,6 +5,7 @@ tags:
   - [Queue]
   - [Async]
   - [Azure]
+  - [Java]
 categories:
   - [Azure]
 description: Azure Queue Storage 適合用於儲存大量的訊息, 但又不會需要長期保存時的情境, 主要被應用在非同步的訊息交換, 由本篇文章帶你認識如何進行操作已及Queue的原理介紹。
