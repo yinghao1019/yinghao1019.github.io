@@ -22,37 +22,34 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"yinghao1019.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"style":"flat","show_result":true},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="本篇文章主要介紹如何透過GCP 提供的Console 介面來操作Pub &#x2F; Sub 服務, 簡單建立topic 及相關的subscription , 並展示發送訊息後, subscription 接收到的內容。">
+    <meta name="description" content="Azure Function 是一種無伺服器 (Serverless) 解決方案, 目的在於減少開發人員維護, 管理基礎設施的成本與時間, 僅需撰寫少量的程式碼就能快速建構服務。 因此最常用來回應事件，如資料庫變更、IoT 資料流、訊息佇列等。本篇文章將帶你認識Azure Function 基礎概念。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Google Cloud Pub&#x2F;Sub Console 操作">
-<meta property="og:url" content="https://yinghao1019.github.io/gcp-pubsub-gui/">
+<meta property="og:title" content="Azure Function 介紹">
+<meta property="og:url" content="https://yinghao1019.github.io/az-func-basic/">
 <meta property="og:site_name" content="DuDuHow&#39;s Coding life">
-<meta property="og:description" content="本篇文章主要介紹如何透過GCP 提供的Console 介面來操作Pub &#x2F; Sub 服務, 簡單建立topic 及相關的subscription , 並展示發送訊息後, subscription 接收到的內容。">
+<meta property="og:description" content="Azure Function 是一種無伺服器 (Serverless) 解決方案, 目的在於減少開發人員維護, 管理基礎設施的成本與時間, 僅需撰寫少量的程式碼就能快速建構服務。 因此最常用來回應事件，如資料庫變更、IoT 資料流、訊息佇列等。本篇文章將帶你認識Azure Function 基礎概念。">
 <meta property="og:locale" content="zh_TW">
-<meta property="og:image" content="https://yinghao1019.github.io/">
-<meta property="og:image" content="https://yinghao1019.github.io/">
-<meta property="og:image" content="https://yinghao1019.github.io/">
-<meta property="og:image" content="https://yinghao1019.github.io/">
-<meta property="og:image" content="https://yinghao1019.github.io/">
-<meta property="og:image" content="https://yinghao1019.github.io/">
-<meta property="article:published_time" content="2024-01-05T02:47:30.000Z">
+<meta property="og:image" content="https://i.imgur.com/JUPIMVq.png">
+<meta property="og:image" content="https://3.bp.blogspot.com/-aiYtyvt_amc/W2cHiMJnTaI/AAAAAAAAgy0/J5imedDEKbkhgUjq4IyhHQ1It5zd8tJJgCLcBGAs/s1600/%25E6%258A%2595%25E5%25BD%25B1%25E7%2589%25871.JPG">
+<meta property="og:image" content="https://2.bp.blogspot.com/-LaV7Tgc-gWY/W2cHiFNH3AI/AAAAAAAAgy4/bmx2C1atCHAx2Yz9qeCEh4hlBVp6eyqOQCLcBGAs/s1600/%25E6%258A%2595%25E5%25BD%25B1%25E7%2589%25872.JPG">
+<meta property="og:image" content="https://1.bp.blogspot.com/-PBEuas48vRk/W2cHiWMaiiI/AAAAAAAAgy8/G5PwjEMCHGgfqmJ8w-tohxyaOCFr5dIOQCLcBGAs/s1600/%25E6%258A%2595%25E5%25BD%25B1%25E7%2589%25873.JPG">
+<meta property="article:published_time" content="2024-01-06T09:10:05.000Z">
 <meta property="article:modified_time" content="2024-01-07T14:23:23.420Z">
 <meta property="article:author" content="DuDuHow">
-<meta property="article:tag" content="Async">
-<meta property="article:tag" content="Message Queue">
-<meta property="article:tag" content="GCP">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="Serverless">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://yinghao1019.github.io/">
+<meta name="twitter:image" content="https://i.imgur.com/JUPIMVq.png">
 
 
-<link rel="canonical" href="https://yinghao1019.github.io/gcp-pubsub-gui/">
+<link rel="canonical" href="https://yinghao1019.github.io/az-func-basic/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://yinghao1019.github.io/gcp-pubsub-gui/","path":"gcp-pubsub-gui/","title":"Google Cloud Pub/Sub Console 操作"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://yinghao1019.github.io/az-func-basic/","path":"az-func-basic/","title":"Azure Function 介紹"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Google Cloud Pub/Sub Console 操作 | DuDuHow's Coding life</title>
+<title>Azure Function 介紹 | DuDuHow's Coding life</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0W303FRRFR"></script>
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-0W303FRRFR","only_pageview":false,"measure_protocol_api_secret":null}</script>
@@ -161,7 +158,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%95%9F%E7%94%A8Pub-Sub-%E7%AE%A1%E7%90%86%E5%8A%9F%E8%83%BD"><span class="nav-number">2.</span> <span class="nav-text">啟用 Pub&#x2F;Sub 管理功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A%E4%B8%BB%E9%A1%8C-Topic"><span class="nav-number">3.</span> <span class="nav-text">設定主題 (Topic)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A%E8%A8%82%E9%96%B1%E9%A0%85%E7%9B%AE-Subscription"><span class="nav-number">4.</span> <span class="nav-text">設定訂閱項目 (Subscription)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%B4%B9"><span class="nav-number">2.</span> <span class="nav-text">功能介紹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E8%AA%AA%E6%98%8E"><span class="nav-number">3.</span> <span class="nav-text">方案說明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%87%89%E7%94%A8%E5%A0%B4%E6%99%AF%E8%88%87%E6%94%AF%E6%8F%B4"><span class="nav-number">4.</span> <span class="nav-text">應用場景與支援</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AF%84%E4%BE%8B"><span class="nav-number">4.1.</span> <span class="nav-text">範例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -245,7 +242,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://yinghao1019.github.io/gcp-pubsub-gui/">
+    <link itemprop="mainEntityOfPage" href="https://yinghao1019.github.io/az-func-basic/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://i.imgur.com/awk567A.jpg">
@@ -258,12 +255,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Google Cloud Pub/Sub Console 操作 | DuDuHow's Coding life">
-      <meta itemprop="description" content="本篇文章主要介紹如何透過GCP 提供的Console 介面來操作Pub / Sub 服務, 簡單建立topic 及相關的subscription , 並展示發送訊息後, subscription 接收到的內容。">
+      <meta itemprop="name" content="Azure Function 介紹 | DuDuHow's Coding life">
+      <meta itemprop="description" content="Azure Function 是一種無伺服器 (Serverless) 解決方案, 目的在於減少開發人員維護, 管理基礎設施的成本與時間, 僅需撰寫少量的程式碼就能快速建構服務。 因此最常用來回應事件，如資料庫變更、IoT 資料流、訊息佇列等。本篇文章將帶你認識Azure Function 基礎概念。">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Google Cloud Pub/Sub Console 操作
+          Azure Function 介紹
         </h1>
 
         <div class="post-meta-container">
@@ -274,7 +271,7 @@
       </span>
       <span class="post-meta-item-text">發表於</span>
 
-      <time title="創建時間：2024-01-05 10:47:30" itemprop="dateCreated datePublished" datetime="2024-01-05T10:47:30+08:00">2024-01-05</time>
+      <time title="創建時間：2024-01-06 17:10:05" itemprop="dateCreated datePublished" datetime="2024-01-06T17:10:05+08:00">2024-01-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -289,7 +286,7 @@
       </span>
       <span class="post-meta-item-text">分類於</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/GCP/" itemprop="url" rel="index"><span itemprop="name">GCP</span></a>
+          <a href="/categories/Azure/" itemprop="url" rel="index"><span itemprop="name">Azure</span></a>
         </span>
     </span>
 
@@ -302,80 +299,76 @@
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/gcp-pubsub-gui/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="gcp-pubsub-gui/" itemprop="commentCount"></span>
+    <a title="disqus" href="/az-func-basic/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="az-func-basic/" itemprop="commentCount"></span>
     </a>
   </span>
   
   
 </div>
 
-            <div class="post-description">本篇文章主要介紹如何透過GCP 提供的Console 介面來操作Pub / Sub 服務, 簡單建立topic 及相關的subscription , 並展示發送訊息後, subscription 接收到的內容。</div>
+            <div class="post-description">Azure Function 是一種無伺服器 (Serverless) 解決方案, 目的在於減少開發人員維護, 管理基礎設施的成本與時間, 僅需撰寫少量的程式碼就能快速建構服務。 因此最常用來回應事件，如資料庫變更、IoT 資料流、訊息佇列等。本篇文章將帶你認識Azure Function 基礎概念。</div>
         </div>
       </header>
 
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本篇文章主要介紹如何透過 GCP 提供的 Console 介面來操作 Pub / Sub 服務，如果對 Pub/Sub 的概念還不熟悉的朋友，</p>
-<p>建議可以閱讀以下的文章進行了解.</p>
-<ol>
-<li><a href="/gcp-pubsub/" title="Google Cloud Pub/Sub 介紹">Google Cloud Pub/Sub 介紹</a></li>
-</ol>
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Azure Functions 是一種無伺服器 (Serverless) 解決方案，目的在於讓開發人員專注於開發業務邏輯的程式，減少維護基礎設施的成本與時間。除了 Azure Function , 其他兩大雲端供應商皆有推出對應的解決方案 (AWS Lambda , Google Cloud Functions) , 各有其優缺點。</p>
+<p>而本篇文章將會帶你認識 Azure function 基礎的觀念，在搭配其他文章來練習實作。</p>
+<h2 id="功能介紹"><a href="#功能介紹" class="headerlink" title="功能介紹"></a>功能介紹</h2><p>Azure Function 是一個在雲端輕鬆執行一小段程式碼或功能的解決方案，你只需要撰寫手頭上問題所需的程式碼，而不需要擔心整個應用程式、執行環境與基礎架構。執行業務程式的單位被稱為 Azure Function App , 可以在 Function App 中撰寫多個不同情境中要執行的程式，如下圖所示。</p>
+<img data-src="https://i.imgur.com/JUPIMVq.png" alt="img" style="zoom: 50%;">
 
-<h2 id="啟用Pub-Sub-管理功能"><a href="#啟用Pub-Sub-管理功能" class="headerlink" title="啟用Pub/Sub 管理功能"></a>啟用 Pub/Sub 管理功能</h2><p>按一下側邊攔，把 Pub/Sub 功能找出來</p>
-<p><img data-src="/"></p>
-<h2 id="設定主題-Topic"><a href="#設定主題-Topic" class="headerlink" title="設定主題 (Topic)"></a>設定主題 (Topic)</h2><ol>
-<li><p>進入 Pub/Sub 管理頁面有，找到主題 (Topic)，選建立主題</p>
-<p><img data-src="/"></p>
-</li>
-<li><p>設定一下主題名稱，名稱會變成一個主題 ID 提供訂閱使用 /project/ 專案名稱 /topics/ 主題名稱</p>
-<p><img data-src="/"></p>
-</li>
-<li><p>確認一下主題生成的狀態</p>
-<p><img data-src="/"></p>
-</li>
-<li><p>點進去 Topic 名稱後可以看狀態</p>
-<p><img data-src="/"></p>
-</li>
-</ol>
-<h2 id="設定訂閱項目-Subscription"><a href="#設定訂閱項目-Subscription" class="headerlink" title="設定訂閱項目 (Subscription)"></a>設定訂閱項目 (Subscription)</h2><p>設定 Subscription 作為接受 Topic 傳遞訊息的監聽項目，本身有提供篩選機制來接收特內容的訊息。</p>
-<p>後續的其他系統整合時也是去監聽 Subscription 有無收到 Topic 傳來的資料 (Subscriber)</p>
+<br>
+
+<p>Azure Function 帶來的優勢與功能有:</p>
 <ol>
-<li><p>進入 Pub/Sub 管理頁面有，找到訂閱項目 (Subscription)，選建立訂閱項目</p>
-<p><img data-src="/"></p>
-</li>
-<li><p>設定訂閱項目</p>
+<li><strong>多種語言選擇</strong>：C#、F#、Node.js、Python、PHP、Batch、Bash 或任何可執行程式。 您可以在 Azure Portal 內設定 Azure Function</li>
+<li><strong> 使用付費</strong>：只有程式碼執行期間需要付費。Azure Function 也支援 NuGet 與 NPM，您可以加入自己喜歡的 lib</li>
+<li><strong> 安全性</strong>：透過 OAuth 程序保護 Http 觸發函式 (如： Azure Active Directory，Facebook，Google，Twitter 和 Microsoft 帳戶)</li>
+<li><strong> 簡單整合</strong>：輕鬆地整合 Azure Service 與 SaaS 產品</li>
+<li><strong>靈活開發</strong>：可以在 portal 上編輯程式。或透過 Github、Visual Studio Team Services 和其他支援開發工具設定 持續整合 或 佈署程式碼。</li>
+<li><strong>彈性擴展</strong>:  支援依照需求大小來自動擴展執行 Function 的 host , 在某些方案中還可以調整要擴展的方式</li>
+</ol>
+<h2 id="方案說明"><a href="#方案說明" class="headerlink" title="方案說明"></a>方案說明</h2><p>當你要建立 Azure Function App 專案時，你必須選擇合適的方案 : Consumption Plan , Premium Plan , App Service Plan</p>
+<p>不同的 Plan 提供了多種不同的優勢，請依照自己的需求來決定 Plan, 以下簡單說明各 Plan 的概念，詳情請看官方文件進行比較。</p>
+<ol>
+<li>**Consumption (情況方案)**：預設值。只需支付程式碼執行時間相對的費用，計算單位是以百萬執行來計費。執行期間可以依據需求添加 instance 來自動擴大 CPU 與記憶體。即時在高負載期間也能向外擴展。但缺點為無法與 Azure Virtual Network 整合，因此在管理 ip 的黑白名單較為麻煩。</li>
+<li><strong>Preminum (高級方案)</strong> : 相較於情況方案，提供更好的 instance 選擇來執行 function , 還提供預熱的方法來應對高流量的問題。並且能與 Virtual Network 整合，但費用較為昂貴，是以類似租 vm 的方式進行計算</li>
+<li> **App Service (應用程式方案)**：相較於 Consumption, Premim。 能與其他應用程序共享同個 App Service。也提供設定如何擴展執行 Function 的 Instance , 但費用相較於 Preminum 更為昂貴，但提供更多的資源來執行 Function</li>
+</ol>
+<blockquote>
+<p>請注意，azure function 免費方案的 instance 在經過一段時間未有事件觸發時，會進入休眠狀態，故再次使用功能時會執行效率會比較久 。</p>
+<p>而其他兩種方案都有支援暖機的功能。因此對效能方面有需求的讀者，請斟酌使用對應的方案</p>
+</blockquote>
+<h2 id="應用場景與支援"><a href="#應用場景與支援" class="headerlink" title="應用場景與支援"></a>應用場景與支援</h2><p>Azure Function 也支援多種不同的系統整合，常用來回應事件，如資料庫變更、IoT 資料流、訊息佇列等。以下整理多種不同的應用</p>
 <ul>
-<li><p>訂閱項目名稱：會生成訂閱項目 ID <code>projects/專案名稱/subscriotions</code></p>
-</li>
-<li><p>選取 Cloud Pub/Sub 主題：選擇訂閱的 Topic 主題 (這邊就選剛剛的 Topic 做測試)</p>
-</li>
-<li><p>傳送類型:</p>
-<ul>
-<li>提取：程式去提取資料個概念</li>
-<li>推送：設定一個 https 基底的 API 提供給 subscription 在接收資料時呼叫使用，也可適用於 GCP 內部服務開出的 API (如: Cloud Run, GKE, GCS, GCE)</li>
+<li>Build a web API</li>
+<li>Process file uploads</li>
+<li>Build a serverless workflow</li>
+<li>Respond to database changes</li>
+<li>Run scheduled tasks</li>
+<li>Create reliable message queue systems</li>
+<li>Analyze IoT data streams</li>
+<li>Process data in real time</li>
 </ul>
+<h3 id="範例"><a href="#範例" class="headerlink" title="範例"></a>範例</h3><ol>
+<li><p>Web application 後端處理： Web App 產生 Request → 將 Request 放入 Service Bus 佇列 → 透過 Azure Function 取出處理後 → 將資料放入 Cosmos DB</p>
+<p><img data-src="https://3.bp.blogspot.com/-aiYtyvt_amc/W2cHiMJnTaI/AAAAAAAAgy0/J5imedDEKbkhgUjq4IyhHQ1It5zd8tJJgCLcBGAs/s1600/%25E6%258A%2595%25E5%25BD%25B1%25E7%2589%25871.JPG" alt="img"></p>
 </li>
-<li><p> 訂閱項目有效期：訂閱項目的活躍保留天數 (多久沒傳遞訊息，之後會自動刪除的天數)</p>
+<li><p>即時檔案處理：將 PDF 檔案上傳至 Blob Storage 內 → 透過 Azure Function 處理 → 送至認知服務 (Cognitive Service) 進行處理 → 將取得資訊放入 SQL DB</p>
+<p><img data-src="https://2.bp.blogspot.com/-LaV7Tgc-gWY/W2cHiFNH3AI/AAAAAAAAgy4/bmx2C1atCHAx2Yz9qeCEh4hlBVp6eyqOQCLcBGAs/s1600/%25E6%258A%2595%25E5%25BD%25B1%25E7%2589%25872.JPG" alt="img"></p>
 </li>
-<li><p>確認期限：訊息被 subscriber 捕抓或是提取後，需要多久的反應回饋時間，從提取到確認的時間差 (確認服務處理的狀態)，這邊可以作為事件被提取後，作完後續流程的確認，超過時間差就會返回到 Message Pool，提供給其他 Subscriber 提取實作。</p>
-</li>
-<li><p>訂閱項目篩選器：篩選你的訊息內容，之後才抓進來到你的 subscription 之中</p>
-<ul>
-<li><code>attributes.&lt;item-name&gt; = &lt;item-info&gt;</code></li>
-<li><code>hasPrefix(&lt;item-name&gt;, &lt;item-info&gt;)</code></li>
-</ul>
-</li>
-<li><p>訊息保留時間：訊息被發送後，到 subscription 且未被 subscriber 提取或是使用，保留在 Message Pool 的時間</p>
-</li>
-<li><p>無效信件：他會轉發你的訊息到其他的 topic 之上的設定</p>
-</li>
-</ul>
+<li><p>自動排程工作：Azure Function 每 15 分鐘清除資料庫重複資料</p>
 </li>
 </ol>
+<p><img data-src="https://1.bp.blogspot.com/-PBEuas48vRk/W2cHiWMaiiI/AAAAAAAAgy8/G5PwjEMCHGgfqmJ8w-tohxyaOCFr5dIOQCLcBGAs/s1600/%25E6%258A%2595%25E5%25BD%25B1%25E7%2589%25873.JPG" alt="img"></p>
 <h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://ithelp.ithome.com.tw/users/20121070/ironman/3552">基於付費公有雲與開源機房自建私有雲之雲端應用服務測試兼叢集與機房託管服務實戰之勇者崎嶇波折且劍還掉在路上的試煉之路</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.tpisoftware.com/tpu/articleDetails/1243">Azure Function 結合 Line Bot 玩出新花樣</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://ithelp.ithome.com.tw/m/articles/10202960">Azure Functions⚡介紹及 Serverless 入門輕鬆學</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://dotblogs.com.tw/regionbbs/2016/04/01/introduction-to-azure-functions">Azure Function: 事件驅動式的雲端應用</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://hackmd.io/@blueskyson/azure-functions">初探 Azure Functions</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://dog0416.blogspot.com/2018/08/azure-azure-2-webjob-azure-function.html">Azure 背景處理服務介紹 2 : WebJob 與 Azure Function</a></li>
 </ul>
 
     </div>
@@ -386,23 +379,19 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Async/" rel="tag"><i class="fa fa-tag"></i> Async</a>
-              <a href="/tags/Message-Queue/" rel="tag"><i class="fa fa-tag"></i> Message Queue</a>
-              <a href="/tags/GCP/" rel="tag"><i class="fa fa-tag"></i> GCP</a>
+              <a href="/tags/Azure/" rel="tag"><i class="fa fa-tag"></i> Azure</a>
+              <a href="/tags/Serverless/" rel="tag"><i class="fa fa-tag"></i> Serverless</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/gcp-pubsub/" rel="prev" title="Google Cloud Pub/Sub 介紹">
-                  <i class="fa fa-angle-left"></i> Google Cloud Pub/Sub 介紹
+                <a href="/spring-boot-i18n/" rel="prev" title="SpringBoot i18n 國際化設定">
+                  <i class="fa fa-angle-left"></i> SpringBoot i18n 國際化設定
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/azure-queue/" rel="next" title="Azure Queue Storage 介紹與操作">
-                  Azure Queue Storage 介紹與操作 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
