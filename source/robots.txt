@@ -7,4 +7,5 @@ Disallow: /vendors/
 Disallow: /fonts/
 Disallow: /vendors/
 Disallow: /fancybox/
+Disallow: /images/
 Sitemap: https://yinghao1019.github.io/sitemap.xml
