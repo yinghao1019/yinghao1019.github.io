@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_hexo.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_hexo.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_hexo.ico">
+  <link rel="mask-icon" href="/images/favicon_hexo.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.css" integrity="sha256-6cQIC71/iBIYXFK+0RHAvwmjwWzkWd+r7v/BX3/vZDc=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yinghao1019.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"style":"flat","show_result":true},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本篇文章專注於教學如何使用Java 建立 Azure function 專案 , 從基本的專案環境建置 、如何開發業務邏輯程式、部屬到Azure Function App 皆會有詳盡的介紹 。幫助讀者快速的了解、建構出Azure Function 的服務 。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Azure Function 實作教學">
+<meta property="og:url" content="https://yinghao1019.github.io/az-func-java/">
+<meta property="og:site_name" content="DuDuHow&#39;s Coding life">
+<meta property="og:description" content="本篇文章專注於教學如何使用Java 建立 Azure function 專案 , 從基本的專案環境建置 、如何開發業務邏輯程式、部屬到Azure Function App 皆會有詳盡的介紹 。幫助讀者快速的了解、建構出Azure Function 的服務 。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://i.imgur.com/VSIz5ST.jpg">
+<meta property="og:image" content="https://i.imgur.com/S1pEGzd.png">
+<meta property="og:image" content="https://i.imgur.com/XVbtEdF.jpg">
+<meta property="og:image" content="https://learn.microsoft.com/en-us/azure/azure-functions/media/functions-manually-run-non-http/azure-functions-admin-url-anatomy.png">
+<meta property="og:image" content="https://learn.microsoft.com/en-us/azure/azure-functions/media/functions-manually-run-non-http/functions-manually-run-non-http-body.png">
+<meta property="og:image" content="https://learn.microsoft.com/en-us/azure/azure-functions/media/functions-manually-run-non-http/functions-manually-run-non-http-send.png">
+<meta property="og:image" content="https://learn.microsoft.com/zh-tw/azure/azure-functions/media/functions-how-to-github-actions/get-publish-profile.png">
+<meta property="og:image" content="https://i.imgur.com/z6ykzr2.jpg">
+<meta property="og:image" content="https://i.imgur.com/P42ILM9.jpg">
+<meta property="article:published_time" content="2024-01-08T01:22:25.000Z">
+<meta property="article:modified_time" content="2024-01-08T15:46:37.113Z">
+<meta property="article:author" content="DuDuHow">
+<meta property="article:tag" content="Azure">
+<meta property="article:tag" content="Serverless">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgur.com/VSIz5ST.jpg">
+
+
+<link rel="canonical" href="https://yinghao1019.github.io/az-func-java/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://yinghao1019.github.io/az-func-java/","path":"az-func-java/","title":"Azure Function 實作教學"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Azure Function 實作教學 | DuDuHow's Coding life</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0W303FRRFR"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-0W303FRRFR","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+<script src="https://kit.fontawesome.com/35821dbe4c.js" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0W303FRRFR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0W303FRRFR');
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DuDuHow's Coding life</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜尋" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa-regular fa-address-book fa-fw"></i>關於</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜尋
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜尋..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83"><span class="nav-number">2.</span> <span class="nav-text">開發環境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E5%B0%88%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">建立專案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%88%E6%A1%88%E7%B5%90%E6%A7%8B"><span class="nav-number">3.1.</span> <span class="nav-text">專案結構</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AF%84%E4%BE%8B%E7%A8%8B%E5%BC%8F%E7%A2%BC%E8%AA%AA%E6%98%8E"><span class="nav-number">4.</span> <span class="nav-text">範例程式碼說明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%80%E5%8F%96Trigger-%E9%A1%8D%E5%A4%96%E8%B3%87%E8%A8%8A"><span class="nav-number">4.1.</span> <span class="nav-text">讀取 Trigger  額外資訊</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Log-%E8%BC%B8%E5%87%BA"><span class="nav-number">4.2.</span> <span class="nav-text">Log 輸出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%80%E5%8F%96%E5%A4%96%E9%83%A8%E5%8F%83%E6%95%B8-%E3%80%81%E7%92%B0%E5%A2%83%E8%AE%8A%E6%95%B8"><span class="nav-number">4.3.</span> <span class="nav-text">讀取外部參數 、環境變數</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%AC%E8%A9%A6%E8%88%87%E9%99%A4%E9%8C%AF"><span class="nav-number">5.</span> <span class="nav-text">測試與除錯</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Plugin-Debug"><span class="nav-number">5.1.</span> <span class="nav-text">Plugin Debug</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%8B%95%E8%A7%B8%E7%99%BCFunction"><span class="nav-number">5.2.</span> <span class="nav-text">手動觸發 Function</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E5%B1%AC%E5%88%B0-Azure-Function-App"><span class="nav-number">6.</span> <span class="nav-text">部屬到 Azure Function  App</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GitHub-Action"><span class="nav-number">6.1.</span> <span class="nav-text">GitHub Action</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Azure-CLI-%E9%83%A8%E5%B1%AC"><span class="nav-number">6.2.</span> <span class="nav-text">Azure CLI 部屬</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%A3%E6%8E%A7-Azure-Function"><span class="nav-number">7.</span> <span class="nav-text">監控 Azure Function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">8.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DuDuHow" src="https://i.imgur.com/awk567A.jpg">
+  <p class="site-author-name" itemprop="name">DuDuHow</p>
+  <div class="site-description" itemprop="description">歡迎來到 DuDuHow 的程式人生</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yinghao1019" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yinghao1019" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:z112517z@gmail.com" title="E-Mail → mailto:z112517z@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+  <div class="links-of-blogroll motion-element links-of-blogroll-block">
+  <div class="links-of-blogroll-title">
+      <!-- 設定你要的fa fa icon-->
+      <i class="fa fa-history fa-" aria-hidden="true" style="margin: 1rem 0.25rem 0.5rem 0"></i>
+      Latest Posts
+  </div>
+  <ul class="links-of-blogroll-list">
+      <li>
+          <a href="/az-func-java/" title="Azure Function 實作教學" target="_blank">Azure Function 實作教學</a>
+      </li>
+      <li>
+          <a href="/az-func-basic/" title="Azure Function 介紹" target="_blank">Azure Function 介紹</a>
+      </li>
+      <li>
+          <a href="/spring-boot-i18n/" title="SpringBoot i18n 國際化設定" target="_blank">SpringBoot i18n 國際化設定</a>
+      </li>
+      <li>
+          <a href="/azure-queue/" title="Azure Queue Storage 介紹與操作" target="_blank">Azure Queue Storage 介紹與操作</a>
+      </li>
+      <li>
+          <a href="/gcp-pubsub-gui/" title="Google Cloud Pub/Sub Console 操作" target="_blank">Google Cloud Pub/Sub Console 操作</a>
+      </li>
+  </ul>
+  </div>
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://yinghao1019.github.io/az-func-java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.imgur.com/awk567A.jpg">
+      <meta itemprop="name" content="DuDuHow">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DuDuHow's Coding life">
+      <meta itemprop="description" content="歡迎來到 DuDuHow 的程式人生">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Azure Function 實作教學 | DuDuHow's Coding life">
+      <meta itemprop="description" content="本篇文章專注於教學如何使用Java 建立 Azure function 專案 , 從基本的專案環境建置 、如何開發業務邏輯程式、部屬到Azure Function App 皆會有詳盡的介紹 。幫助讀者快速的了解、建構出Azure Function 的服務 。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Azure Function 實作教學
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+      
+
+      <time title="創建時間：2024-01-08 09:22:25 / 修改時間：23:46:37" itemprop="dateCreated datePublished" datetime="2024-01-08T09:22:25+08:00">2024-01-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Azure/" itemprop="url" rel="index"><span itemprop="name">Azure</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/az-func-java/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="az-func-java/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+            <div class="post-description">本篇文章專注於教學如何使用Java 建立 Azure function 專案 , 從基本的專案環境建置 、如何開發業務邏輯程式、部屬到Azure Function App 皆會有詳盡的介紹 。幫助讀者快速的了解、建構出Azure Function 的服務 。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本篇文章專注於教學如何使用 Java 建立 Azure function 專案，從基本的專案環境建置 、如何開發業務邏輯程式、部屬到 Azure Function App 皆會有詳盡的介紹 。幫助讀者快速的了解、建構出 Azure Function 的服務 。</p>
+<p>在開始進行教學前，建議先閱讀 Azure Function 的基本概念會比較好上手:</p>
+<ol>
+<li><a href="/az-func-basic/" title="Azure Function 介紹">Azure Function 介紹</a></li>
+</ol>
+
+<br>
+
+<h2 id="開發環境"><a href="#開發環境" class="headerlink" title="開發環境"></a>開發環境</h2><p>Azure function 支援多種方式 (Maven , Eclipse , Vs Code) 建立專案，而本文選擇使用 Intellj Idea 進行開發:</p>
+<ul>
+<li>JDK 8 , 11 or 17</li>
+<li> 安裝 Maven 3.5.0 +</li>
+<li> 安裝 Azure CLI 2.4 或更新版本</li>
+<li>安裝 Azure Functions Core Tools 4.x 版</li>
+</ul>
+<p>在使用 Intellj 開發前，需安裝額外的外掛程式並登入</p>
+<p>Plugin 搜尋  Azure ToolKit for Intellj  -&gt; 安裝並重啟 -&gt; 上方列選擇 tool  -&gt; azure sign in 讓 local 環境取得雲端資源存取權限</p>
+<img data-src="https://i.imgur.com/VSIz5ST.jpg" style="zoom: 60%;">
+
+<br>
+
+<h2 id="建立專案"><a href="#建立專案" class="headerlink" title="建立專案"></a>建立專案</h2><p>如同建立 spring Boot 專案，在 new project 選擇 Azure Functions 並填入專案相關資訊即可創立。</p>
+<h3 id="專案結構"><a href="#專案結構" class="headerlink" title="專案結構"></a>專案結構</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">FunctionsProject</span><br><span class="line"> | - src</span><br><span class="line"> | | - main</span><br><span class="line"> | | | - java</span><br><span class="line"> | | | | - FunctionApp</span><br><span class="line"> | | | | | - MyFirstFunction.java</span><br><span class="line"> | | | | | - MySecondFunction.java</span><br><span class="line"> | - target</span><br><span class="line"> | | - azure-functions</span><br><span class="line"> | | | - FunctionApp</span><br><span class="line"> | | | | - FunctionApp.jar</span><br><span class="line"> | | | | - host.json</span><br><span class="line"> | | | | - MyFirstFunction</span><br><span class="line"> | | | | | - function.json</span><br><span class="line"> | | | | - MySecondFunction</span><br><span class="line"> | | | | | - function.json</span><br><span class="line"> | | | | - bin</span><br><span class="line"> | | | | - lib</span><br><span class="line"> | - pom.xml</span><br><span class="line"> | - host.json</span><br><span class="line"> | - local.settings.json</span><br></pre></td></tr></tbody></table></figure>
+
+<p>此為 Java 的專案範例結構，由於是透過 maven 進行管理，結構上大致與 Spring Boot 等 Maven 專案結構相同。各資料夾說明如下:</p>
+<ul>
+<li>FunctionApp : 原始碼根目錄。依照業務功能需求可再拆成 sub package 管理，要執行的 Azure Function 也會存放於此。</li>
+<li>host.json :  執行 Azure Function App 的系統參數設定。 ex: log 設定，監控設定，trigger 的全域設定</li>
+<li> local.settings.json : 本機 Debug 模式時所讀取的設定，設定資訊如同 Azure Function 的 App Settings.</li>
+<li>target : 執行 maven 後的打包檔，包含 azure function 對應的資訊，第三方套件等 ….</li>
+</ul>
+<br>
+
+<h2 id="範例程式碼說明"><a href="#範例程式碼說明" class="headerlink" title="範例程式碼說明"></a>範例程式碼說明</h2><p>撰寫程式碼前，Azure Function 有兩個核心的概念需認識:</p>
+<ul>
+<li>Trigger  : 用於設定撰寫的程式碼被觸發的條件，Azure 支援多種不同的方式. Ex: Http , Timer , Queue ,Blob</li>
+<li>Binding : 當希望程式被觸發後有額外的輸入或輸出，可用此功能做設定 </li>
+</ul>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.howhow.functions.handler;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.microsoft.azure.functions.*;</span><br><span class="line"><span class="keyword">import</span> com.microsoft.azure.functions.annotation.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Optional;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DemoFunction</span> {</span><br><span class="line">  <span class="meta">@FunctionName("QueueOutputPOJOList")</span></span><br><span class="line">  <span class="keyword">public</span> HttpResponseMessage <span class="title function_">QueueOutputPOJOList</span><span class="params">(</span></span><br><span class="line"><span class="params">      <span class="meta">@HttpTrigger(</span></span></span><br><span class="line"><span class="meta"><span class="params">              name = "req",</span></span></span><br><span class="line"><span class="meta"><span class="params">              methods = {HttpMethod.POST},</span></span></span><br><span class="line"><span class="meta"><span class="params">              authLevel = AuthorizationLevel.ANONYMOUS)</span></span></span><br><span class="line"><span class="params">          HttpRequestMessage&lt;Optional&lt;String&gt;&gt; request,</span></span><br><span class="line"><span class="params">      <span class="meta">@QueueOutput(</span></span></span><br><span class="line"><span class="meta"><span class="params">              name = "itemsOut",</span></span></span><br><span class="line"><span class="meta"><span class="params">              queueName = "test-output-java-pojo",</span></span></span><br><span class="line"><span class="meta"><span class="params">              connection = "AzureWebJobsStorage")</span></span></span><br><span class="line"><span class="params">          OutputBinding&lt;List&lt;TestData&gt;&gt; itemsOut,</span></span><br><span class="line"><span class="params">      <span class="keyword">final</span> ExecutionContext context)</span> {</span><br><span class="line">    context.getLogger().info(<span class="string">"Java HTTP trigger processed a request."</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">String</span> <span class="variable">queueMessageId</span> <span class="operator">=</span> request.getBody().orElse(<span class="literal">null</span>);</span><br><span class="line">    itemsOut.setValue(<span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;TestData&gt;());</span><br><span class="line">    <span class="keyword">if</span> (queueMessageId != <span class="literal">null</span>) {</span><br><span class="line">      <span class="type">TestData</span> <span class="variable">testData1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TestData</span>();</span><br><span class="line">      testData1.id = <span class="string">"msg1"</span> + queueMessageId;</span><br><span class="line">      <span class="type">TestData</span> <span class="variable">testData2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TestData</span>();</span><br><span class="line">      testData2.id = <span class="string">"msg2"</span> + queueMessageId;</span><br><span class="line"></span><br><span class="line">      itemsOut.getValue().add(testData1);</span><br><span class="line">      itemsOut.getValue().add(testData2);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> request.createResponseBuilder(HttpStatus.OK).body(<span class="string">"Hello, "</span> + queueMessageId).build();</span><br><span class="line">    } <span class="keyword">else</span> {</span><br><span class="line">      <span class="keyword">return</span> request</span><br><span class="line">          .createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)</span><br><span class="line">          .body(<span class="string">"Did not find expected items in CosmosDB input list"</span>)</span><br><span class="line">          .build();</span><br><span class="line">    }</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">TestData</span> {</span><br><span class="line">    <span class="keyword">public</span> String id;</span><br><span class="line">  }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>此範例程式為建立一個 HTTP 端口，並將 Request Body 收到的資料新增至設定 Azure Queue Storage 中</p>
+<ul>
+<li>第 11 行：此 Annotation 用來定義 Function 的名字。 若未使用此標註，則在編譯時就不會產生這個 Function 的 Route </li>
+<li>第 13 行：用於設定該 function 要被哪種條件觸發，每個 function 都需要設定 Trigger 的 Annotation 。 範例中則是透過 HTTP 作為觸發，並綁定 HttpRequestMessage 來取得相關請求資訊</li>
+<li>第 18 行：用於設定該 function 額外的輸入與輸出資訊，每個 Function 可設定 0 至多個 Binding 及相關綁定的參數 .</li>
+</ul>
+<br>
+
+<h3 id="讀取Trigger-額外資訊"><a href="#讀取Trigger-額外資訊" class="headerlink" title="讀取Trigger  額外資訊"></a>讀取 Trigger  額外資訊</h3><p>在業務邏輯程式若需要讀取除了 Trigger  其他的額外資訊，可以透過  <code>@BindingName</code> 來設定要取得的 Trigger meta data. </p>
+<p>各 Trigger 可使用的 Meta data 詳情請查看官方文件</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Function</span> {</span><br><span class="line">    </span><br><span class="line">  <span class="meta">@FunctionName("metadata")</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">metadata</span><span class="params">(</span></span><br><span class="line"><span class="params">      <span class="meta">@HttpTrigger(</span></span></span><br><span class="line"><span class="meta"><span class="params">              name = "req",</span></span></span><br><span class="line"><span class="meta"><span class="params">              methods = {HttpMethod.GET, HttpMethod.POST},</span></span></span><br><span class="line"><span class="meta"><span class="params">              authLevel = AuthorizationLevel.ANONYMOUS)</span></span></span><br><span class="line"><span class="params">          Optional&lt;String&gt; body,</span></span><br><span class="line"><span class="params">      <span class="meta">@BindingName("name")</span> String queryValue)</span> {</span><br><span class="line">    <span class="keyword">return</span> body.orElse(queryValue);</span><br><span class="line">  } </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在上述範例中，<code>queryValue</code> 會取得從 HTTP 請求中的查詢字串參數 <code>name</code>。</p>
+<p>以下是另一個範例，示範如何從 Queue Trigger 取得相關 Message 的 <code>Id</code>。</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionName("QueueTriggerMetadata")</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">QueueTriggerMetadata</span><span class="params">(</span></span><br><span class="line"><span class="params">    <span class="meta">@QueueTrigger(</span></span></span><br><span class="line"><span class="meta"><span class="params">            name = "message",</span></span></span><br><span class="line"><span class="meta"><span class="params">            queueName = "test-input-java-metadata",</span></span></span><br><span class="line"><span class="meta"><span class="params">            connection = "AzureWebJobsStorage")</span></span></span><br><span class="line"><span class="params">        String message,</span></span><br><span class="line"><span class="params">    <span class="meta">@BindingName("Id")</span> String metadataId,</span></span><br><span class="line"><span class="params">    <span class="meta">@QueueOutput(</span></span></span><br><span class="line"><span class="meta"><span class="params">            name = "output",</span></span></span><br><span class="line"><span class="meta"><span class="params">            queueName = "test-output-java-metadata",</span></span></span><br><span class="line"><span class="meta"><span class="params">            connection = "AzureWebJobsStorage")</span></span></span><br><span class="line"><span class="params">        OutputBinding&lt;TestData&gt; output,</span></span><br><span class="line"><span class="params">    <span class="keyword">final</span> ExecutionContext context)</span> {</span><br><span class="line">  context</span><br><span class="line">      .getLogger()</span><br><span class="line">      .info(</span><br><span class="line">          <span class="string">"Java Queue trigger function processed a message: "</span></span><br><span class="line">              + message</span><br><span class="line">              + <span class="string">" with metadaId:"</span></span><br><span class="line">              + metadataId);</span><br><span class="line">  <span class="type">TestData</span> <span class="variable">testData</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TestData</span>();</span><br><span class="line">  testData.id = metadataId;</span><br><span class="line">  output.setValue(testData);</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<br>
+
+<h3 id="Log-輸出"><a href="#Log-輸出" class="headerlink" title="Log 輸出"></a>Log 輸出</h3><p>如果要在程式寫入 Log 資訊，則是透過 ExecutionContext <code>中定義的</code> getLogger 。而 Execution Context 除了 Logger, 也能取得其他額外資訊，詳請請看官方文件</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> String <span class="title function_">echo</span><span class="params">(</span></span><br><span class="line"><span class="params">    <span class="meta">@HttpTrigger(</span></span></span><br><span class="line"><span class="meta"><span class="params">            name = "req",</span></span></span><br><span class="line"><span class="meta"><span class="params">            methods = {HttpMethod.POST},</span></span></span><br><span class="line"><span class="meta"><span class="params">            authLevel = AuthorizationLevel.ANONYMOUS)</span></span></span><br><span class="line"><span class="params">        String req,</span></span><br><span class="line"><span class="params">    ExecutionContext context)</span> {</span><br><span class="line">  <span class="keyword">if</span> (req.isEmpty()) {</span><br><span class="line">    context</span><br><span class="line">        .getLogger()</span><br><span class="line">        .warning(</span><br><span class="line">            <span class="string">"Empty request body received by function "</span></span><br><span class="line">                + context.getFunctionName()</span><br><span class="line">                + <span class="string">" with invocation "</span></span><br><span class="line">                + context.getInvocationId());</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">return</span> String.format(req);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<br>
+
+<h3 id="讀取外部參數-、環境變數"><a href="#讀取外部參數-、環境變數" class="headerlink" title="讀取外部參數 、環境變數"></a>讀取外部參數 、環境變數</h3><p>在專案開發中，有些設定會依照不同環境來變動，像是連線，認證資訊 等 。這些資訊通常都會設定在 App Settings , </p>
+<p>App Settings 的資訊在執行期間會被視為環境變數，因此可使用 <code>System.getenv("AzureWebJobsStorage")</code> 來存取這些設定。</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> String <span class="title function_">echo</span><span class="params">(</span></span><br><span class="line"><span class="params">    <span class="meta">@HttpTrigger(</span></span></span><br><span class="line"><span class="meta"><span class="params">            name = "req",</span></span></span><br><span class="line"><span class="meta"><span class="params">            methods = {HttpMethod.POST},</span></span></span><br><span class="line"><span class="meta"><span class="params">            authLevel = AuthorizationLevel.ANONYMOUS)</span></span></span><br><span class="line"><span class="params">        String req,</span></span><br><span class="line"><span class="params">    ExecutionContext context)</span> {</span><br><span class="line">  context.getLogger().info(<span class="string">"My app setting value: "</span> + System.getenv(<span class="string">"myAppSetting"</span>));</span><br><span class="line">  <span class="keyword">return</span> String.format(req);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<br>
+
+<h2 id="測試與除錯"><a href="#測試與除錯" class="headerlink" title="測試與除錯"></a>測試與除錯</h2><h3 id="Plugin-Debug"><a href="#Plugin-Debug" class="headerlink" title="Plugin Debug"></a>Plugin Debug</h3><p>Intellj 的 Azure Plugin 支援本機 Debug  , 用法如同 SpringBoot 除錯，會模擬一個 service 來進行除錯。</p>
+<p>但在本機除錯時，plugin 會存取專案根目錄中的 <code>local .settings.json</code> 來做為 App Setting </p>
+<ol>
+<li><p>在執行除錯前，可至 設定中調整要讀取的 App Setting  , 此服務佔用的 port 或 jvm 相關的參數</p>
+<img data-src="https://i.imgur.com/S1pEGzd.png" alt="image-20240108112756092" style="zoom:50%;">
+</li>
+<li><p>設定中斷點後執行 Debug , 即可查看該中斷點以前的資訊</p>
+<img data-src="https://i.imgur.com/XVbtEdF.jpg" style="zoom:50%;"></li>
+</ol>
+<h3 id="手動觸發Function"><a href="#手動觸發Function" class="headerlink" title="手動觸發Function"></a>手動觸發 Function</h3><p>開發的 Azure Function 條件若需要在特定情境中才能被觸發，但這個情境又難以達成時，可以透過發送 HTTP 請求的方式來進行觸發。</p>
+<p>Ex: 排程，Queue ,Blob</p>
+<ol>
+<li><p>設定要觸發 Function 的端點，規則如下:</p>
+<p><img data-src="https://learn.microsoft.com/en-us/azure/azure-functions/media/functions-manually-run-non-http/azure-functions-admin-url-anatomy.png" alt="Define the request location: host name + folder path + function name"></p>
+<ul>
+<li><p>hostname : 設定你的 function  網域名稱。本機的話就是 Localhost</p>
+</li>
+<li><p>Function Name : 使用 @FunctionName 設定的名字</p>
+</li>
+<li><p>HTTP method : 方法統一採用 POST , content-type 則是 application/json</p>
+</li>
+<li><p>認證資訊：部屬的 function 因資安考量，不會開放給所有人觸發。因此需從 function 取得 Mater key 並在 Http Header 中設定</p>
+<p>x-functions-key</p>
+</li>
+</ul>
+</li>
+<li><p>設定要帶的參數</p>
+<p>有些 Trigger 會綁定一些輸入資訊，此時在 Body 中帶入 {“input”:”${相關資訊}”}</p>
+<p><img data-src="https://learn.microsoft.com/en-us/azure/azure-functions/media/functions-manually-run-non-http/functions-manually-run-non-http-body.png" alt="Postman body settings."></p>
+</li>
+<li><p>如果有成功回應，代表 function 被觸發</p>
+<p><img data-src="https://learn.microsoft.com/en-us/azure/azure-functions/media/functions-manually-run-non-http/functions-manually-run-non-http-send.png" alt="Send a request with Postman."></p>
+</li>
+</ol>
+<br>
+
+<h2 id="部屬到-Azure-Function-App"><a href="#部屬到-Azure-Function-App" class="headerlink" title="部屬到 Azure Function  App"></a>部屬到 Azure Function  App</h2><p>Azure Function 支援多種部屬方式，包括持續，手動部屬的選項。同時也支援容器化的部屬方法</p>
+<p><strong>CD (持續部屬)</strong></p>
+<ul>
+<li>GitHub Action</li>
+<li>Azure Pipeline</li>
+<li>Jenkins</li>
+</ul>
+<p><strong>手動部屬</strong></p>
+<ul>
+<li>Azure CLI</li>
+<li>REST API</li>
+<li>Containers</li>
+</ul>
+<p>本篇文章僅會教學使用 GitHub Action 完成 CD , 使用 Azure CLI 手動部屬的方法，剩下的方法請參照<a target="_blank" rel="external nofollow noopener noreferrer" href="https://learn.microsoft.com/en-us/azure/azure-functions/functions-continuous-deployment">官方文件閱讀</a> </p>
+<h3 id="GitHub-Action"><a href="#GitHub-Action" class="headerlink" title="GitHub Action"></a>GitHub Action</h3><ol>
+<li><p>設定 GitHub Workflow 能存取 Azure Function 資源的權限</p>
+<ul>
+<li><p>下載 publish profile </p>
+</li>
+<li><p>於 Github Secret 中新增 <code>AZURE_FUNCTIONAPP_PUBLISH_PROFILE</code> 變數，並將 <code>publish profile</code> 的內容貼至對應的值中</p>
+<p><img data-src="https://learn.microsoft.com/zh-tw/azure/azure-functions/media/functions-how-to-github-actions/get-publish-profile.png" alt="Download publish profile"></p>
+<br></li>
+</ul>
+</li>
+<li><p>於專案路徑 <code>/.github/workflows/</code> 設定 github workflow 的 Yaml 檔 </p>
+<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Deploy</span> <span class="string">Java</span> <span class="string">project</span> <span class="string">to</span> <span class="string">Azure</span> <span class="string">Function</span> <span class="string">App</span></span><br><span class="line"></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">main</span></span><br><span class="line">  <span class="attr">workflow_dispatch:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">env:</span></span><br><span class="line">  <span class="attr">AZURE_FUNCTIONAPP_NAME:</span> <span class="string">'your-app-name'</span>   <span class="comment"># set this to your function app name on Azure</span></span><br><span class="line">  <span class="attr">POM_XML_DIRECTORY:</span> <span class="string">'.'</span>                    <span class="comment"># set this to the directory which contains pom.xml file</span></span><br><span class="line">  <span class="attr">JAVA_VERSION:</span> <span class="string">'8'</span>                         <span class="comment"># set this to the java version to use (e.g. '8', '11', '17')</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build-and-deploy:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">windows-latest</span></span><br><span class="line">    <span class="attr">environment:</span> <span class="string">dev</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">'Checkout GitHub Action'</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/checkout@v3</span></span><br><span class="line"></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Setup</span> <span class="string">Java</span> <span class="string">Sdk</span> <span class="string">${{</span> <span class="string">env.JAVA_VERSION</span> <span class="string">}}</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">actions/setup-java@v1</span></span><br><span class="line">      <span class="attr">with:</span></span><br><span class="line">        <span class="attr">java-version:</span> <span class="string">${{</span> <span class="string">env.JAVA_VERSION</span> <span class="string">}}</span></span><br><span class="line"></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">'Restore Project Dependencies Using Mvn'</span></span><br><span class="line">      <span class="attr">shell:</span> <span class="string">pwsh</span></span><br><span class="line">      <span class="attr">run:</span> <span class="string">|</span></span><br><span class="line"><span class="string">        pushd './${{ env.POM_XML_DIRECTORY }}'</span></span><br><span class="line"><span class="string">        mvn clean package</span></span><br><span class="line"><span class="string">        popd</span></span><br><span class="line"><span class="string"></span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">'Run Azure Functions Action'</span></span><br><span class="line">      <span class="attr">uses:</span> <span class="string">Azure/functions-action@v1</span></span><br><span class="line">      <span class="attr">id:</span> <span class="string">fa</span></span><br><span class="line">      <span class="attr">with:</span></span><br><span class="line">        <span class="attr">app-name:</span> <span class="string">${{</span> <span class="string">env.AZURE_FUNCTIONAPP_NAME</span> <span class="string">}}</span></span><br><span class="line">        <span class="attr">package:</span> <span class="string">'$<span class="template-variable">{{ env.POM_XML_DIRECTORY }}</span>'</span> <span class="comment"># if there are multiple function apps in same project, then this path will be like './${{ env.POM_XML_DIRECTORY }}/target/azure-functions/${{ env.POM_FUNCTIONAPP_NAME }'</span></span><br><span class="line">        <span class="attr">publish-profile:</span> <span class="string">${{</span> <span class="string">secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE</span> <span class="string">}}</span></span><br><span class="line">        <span class="attr">respect-pom-xml:</span> <span class="literal">true</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>於 Action 上檢視是否成功執行</p>
+<img data-src="https://i.imgur.com/z6ykzr2.jpg" style="zoom:60%;"></li>
+</ol>
+<h3 id="Azure-CLI-部屬"><a href="#Azure-CLI-部屬" class="headerlink" title="Azure CLI 部屬"></a>Azure CLI 部屬</h3><ol>
+<li><p>執行 mvn clean install 打包專案</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn clean install</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>將<code>./target/azure-functions</code>  中的 project 資料夾轉成 zip 檔</p>
+</li>
+<li><p>執行 Azure cli 的以下指令進行部屬</p>
+<ul>
+<li>-g : function 的 resource group</li>
+<li>-n: function app 的 name</li>
+<li>–src: 本機 zip 檔的位置 </li>
+</ul>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">az functionapp deployment <span class="built_in">source</span> config-zip -g &lt;resource_group&gt; -n \</span><br><span class="line">&lt;app_name&gt; --src &lt;zip_file_path&gt;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>登入 azure portal 查看部屬情況</p>
+<img data-src="https://i.imgur.com/P42ILM9.jpg" style="zoom:50%;"></li>
+</ol>
+<br>
+
+<h2 id="監控-Azure-Function"><a href="#監控-Azure-Function" class="headerlink" title="監控 Azure Function"></a>監控 Azure Function</h2><p>當程式上線後，若發生重大異常，錯誤，開發人員很難去得知。因此 Azure Function 提供整合 Application Insight 的方法來進行持續監控，</p>
+<p>透過設定好的預警門檻，來觸發對應的信件通知系統來完成自動化的監控。</p>
+<p> 筆者將會於下篇文章教學如何實現 Azure function 整合 Application insight 的監控功能。</p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://learn.microsoft.com/en-us/azure/azure-functions/functions-continuous-deployment">Continuous deployment for Azure Functions</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-java?tabs=bash,consumption">Azure Functions Java developer guide</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://learn.microsoft.com/en-us/azure/azure-functions/functions-create-maven-intellij">Create your first Java function in Azure using IntelliJ</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://hackmd.io/@blueskyson/azure-functions#%E5%B8%83%E7%BD%B2%E5%88%B0-Azure-Functions">初探 Azure Functions</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Azure/" rel="tag"><i class="fa fa-tag"></i> Azure</a>
+              <a href="/tags/Serverless/" rel="tag"><i class="fa fa-tag"></i> Serverless</a>
+              <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/az-func-basic/" rel="prev" title="Azure Function 介紹">
+                  <i class="fa fa-angle-left"></i> Azure Function 介紹
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-regular fa-closed-captioning"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Howard - 轉載文章請附上原文連結</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.umd.js" integrity="sha256-ytMJGN3toR+a84u7g7NuHm91VIR06Q41kMWDr2pq7Zo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"duduhow","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>
