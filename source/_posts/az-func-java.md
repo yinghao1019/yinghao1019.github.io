@@ -37,7 +37,7 @@ Azure function 支援多種方式 (Maven , Eclipse , Vs Code )建立專案, 而�
 
 Plugin 搜尋  Azure ToolKit for Intellj  -> 安裝並重啟 -> 上方列選擇 tool  -> azure sign in 讓local 環境取得雲端資源存取權限
 
-<img src="C:\Users\Howard.YH.Hung\AppData\Roaming\Typora\typora-user-images\image-20240108150903026.png" alt="image-20240108150903026" style="zoom:67%;" />
+<img src="https://i.imgur.com/VSIz5ST.jpg" style="zoom: 60%;" />
 
 <br>
 
@@ -88,8 +88,6 @@ FunctionsProject
 
 - Trigger  : 用於設定撰寫的程式碼被觸發的條件, Azure 支援多種不同的方式. Ex: Http , Timer , Queue ,Blob
 - Binding : 當希望程式被觸發後有額外的輸入或輸出 , 可用此功能做設定 
-
-
 
 ```java
 package com.howhow.functions.handler;
@@ -266,11 +264,11 @@ Intellj 的Azure Plugin 支援本機Debug  , 用法如同SpringBoot 除錯, 會�
 
 1. 在執行除錯前, 可至 設定中調整要讀取的App Setting  , 此服務佔用的port 或jvm 相關的參數
 
-   <img src="C:\Users\Howard.YH.Hung\AppData\Roaming\Typora\typora-user-images\image-20240108112756092.png" alt="image-20240108112756092" style="zoom:67%;" />
+   <img src="https://i.imgur.com/S1pEGzd.png" alt="image-20240108112756092" style="zoom:50%;" />
 
 2. 設定中斷點後執行Debug , 即可查看該中斷點以前的資訊
 
-   ![]()
+   <img src="https://i.imgur.com/XVbtEdF.jpg" style="zoom:50%;" />
 
    
 
@@ -335,6 +333,8 @@ Azure Function 支援多種部屬方式, 包括持續, 手動部屬的選項 .�
    - 於Github Secret 中新增 `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` 變數 , 並將`publish profile` 的內容貼至對應的值中
 
      ![Download publish profile](https://learn.microsoft.com/zh-tw/azure/azure-functions/media/functions-how-to-github-actions/get-publish-profile.png)
+     
+     <br/>
 
 2. 於專案路徑 `/.github/workflows/` 設定github workflow 的 Yaml 檔 
 
@@ -384,7 +384,7 @@ Azure Function 支援多種部屬方式, 包括持續, 手動部屬的選項 .�
 
 3. 於Action 上檢視是否成功執行
 
-   ![]()
+   <img src="https://i.imgur.com/z6ykzr2.jpg" style="zoom:60%;" />
 
 ### Azure CLI 部屬
 
@@ -409,7 +409,7 @@ Azure Function 支援多種部屬方式, 包括持續, 手動部屬的選項 .�
 
 4. 登入azure portal 查看部屬情況
 
-   ![]()
+   <img src="https://i.imgur.com/P42ILM9.jpg" style="zoom:50%;" />
 
 <br/>
 
