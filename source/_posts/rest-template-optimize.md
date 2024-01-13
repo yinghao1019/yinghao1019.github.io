@@ -12,8 +12,9 @@ description: 本文講解如何在Spring Boot 專案中優化RestTemplate 的效
 ---
 
 ## 前言
-當後端需要跟其他第三方服務、系統溝通時, 最常用的方式為透過Rest API 進行溝通。
-Spring Boot 專案中, 提供了一個好用的call API 工具 - RestTemplate , RestTemplate 提供了簡單的介面簡化了我們呼叫API的程式碼。
+當後端需要跟其他第三方服務, 系統溝通時, 最常用的方式為透過Rest API 進行溝通。
+Spring Boot 專案中, 提供了一個好用的call API 工具 - RestTemplate , RestTemplate 提供了簡單的介面,
+簡化了我們呼叫API的程式碼。
 
 但是, RestTemplate 在發送大量請求時往往會發生效能瓶頸, 故本篇文章將教學如何進行效能調教來解決RestTemplate 速度慢的問題。
 
@@ -23,19 +24,13 @@ Spring Boot 專案中, 提供了一個好用的call API 工具 - RestTemplate , 
 
 RestTemplate 底層預設發送 HTTP Request  的工具為使用 HttpURLConnection 來進行發送 。
 
-此工具未支援HTTP Connection Pool 來縮短消耗的時間 , 我們可將其換成現今Java 有支援Connection Pool 的工具 , 像是
+此工具未支援HTTP Connection Pool 來縮短消耗的時間 , 我們可將其換成現今Java 有支援Connection Pool 的工具 , 像是OkHttp , 
 
-OkHttp、Apache HttpClient、WebClient、FeignClient 等等。而本篇將採用設定Apache HttpClient作為RestTemplate 發送HTTP Request 的工具 。
+Apache HttpClient , WebClient ,FeignClient 。而本篇將採用設定 Apache HttpClient 作為RestTemplate 發送HTTP Request 的工具 。
 
 安裝 dependency
 
 ```xml
-<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
-</dependency>
-
 <dependency>
     <groupId>org.apache.httpcomponents</groupId>
     <artifactId>httpclient</artifactId>
