@@ -25,7 +25,7 @@ RestTemplate 底層預設發送 HTTP Request  的工具為使用 HttpURLConnecti
 
 此工具未支援HTTP Connection Pool 來縮短消耗的時間 , 我們可將其換成現今Java 有支援Connection Pool 的工具 , 像是
 
-`OkHttp` , `Apache HttpClient` , `WebClient` ,`FeignClient` 等等。而本篇將採用設定 `Apache HttpClient` 作為RestTemplate 發送HTTP Request 的工具 。
+OkHttp、Apache HttpClient、WebClient、FeignClient 等等。而本篇將採用設定Apache HttpClient作為RestTemplate 發送HTTP Request 的工具 。
 
 安裝 dependency
 
