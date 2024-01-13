@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_hexo.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_hexo.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_hexo.ico">
+  <link rel="mask-icon" href="/images/favicon_hexo.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.css" integrity="sha256-6cQIC71/iBIYXFK+0RHAvwmjwWzkWd+r7v/BX3/vZDc=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"yinghao1019.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"style":"flat","show_result":true},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"},"path":"/search.json","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文講解如何在Spring Boot 專案中優化RestTemplate 的效能, 通過將Http Client 替換成Apache Http Client 、設定connection pool, keep-alive 策略等, 讓讀者更清楚RestTemplate 優化的方向。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RestTemplate 效能調教">
+<meta property="og:url" content="https://yinghao1019.github.io/rest-template-optimize/">
+<meta property="og:site_name" content="DuDuHow&#39;s Coding life">
+<meta property="og:description" content="本文講解如何在Spring Boot 專案中優化RestTemplate 的效能, 通過將Http Client 替換成Apache Http Client 、設定connection pool, keep-alive 策略等, 讓讀者更清楚RestTemplate 優化的方向。">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2024-01-09T14:29:41.000Z">
+<meta property="article:modified_time" content="2024-01-13T00:47:13.009Z">
+<meta property="article:author" content="DuDuHow">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Http">
+<meta property="article:tag" content="Apache">
+<meta property="article:tag" content="RestTemplate">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://yinghao1019.github.io/rest-template-optimize/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://yinghao1019.github.io/rest-template-optimize/","path":"rest-template-optimize/","title":"RestTemplate 效能調教"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>RestTemplate 效能調教 | DuDuHow's Coding life</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0W303FRRFR"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-0W303FRRFR","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+<script src="https://kit.fontawesome.com/35821dbe4c.js" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0W303FRRFR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0W303FRRFR');
+</script>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">DuDuHow's Coding life</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜尋" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa-regular fa-address-book fa-fw"></i>關於</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜尋
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="搜尋..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9AClientHttpRequestFactory"><span class="nav-number">2.</span> <span class="nav-text">設定 ClientHttpRequestFactory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A-Connection-Pool-Manager"><span class="nav-number">3.</span> <span class="nav-text">設定 Connection Pool Manager</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A-Keep-Alive-%E6%A9%9F%E5%88%B6"><span class="nav-number">4.</span> <span class="nav-text">設定 Keep Alive  機制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A%E8%AB%8B%E6%B1%82%E5%8F%83%E6%95%B8"><span class="nav-number">5.</span> <span class="nav-text">設定請求參數</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E8%A8%AD%E5%AE%9A%E7%AF%84%E4%BE%8B"><span class="nav-number">6.</span> <span class="nav-text">完整設定範例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">7.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="DuDuHow" src="https://i.imgur.com/awk567A.jpg">
+  <p class="site-author-name" itemprop="name">DuDuHow</p>
+  <div class="site-description" itemprop="description">歡迎來到 DuDuHow 的程式人生</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yinghao1019" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yinghao1019" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:z112517z@gmail.com" title="E-Mail → mailto:z112517z@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+  <div class="links-of-blogroll motion-element links-of-blogroll-block">
+  <div class="links-of-blogroll-title">
+      <!-- 設定你要的fa fa icon-->
+      <i class="fa fa-history fa-" aria-hidden="true" style="margin: 1rem 0.25rem 0.5rem 0"></i>
+      Latest Posts
+  </div>
+  <ul class="links-of-blogroll-list">
+      <li>
+          <a href="/rest-template-optimize/" title="RestTemplate 效能調教" target="_blank">RestTemplate 效能調教</a>
+      </li>
+      <li>
+          <a href="/az-func-java/" title="Azure Function 實作教學" target="_blank">Azure Function 實作教學</a>
+      </li>
+      <li>
+          <a href="/az-func-basic/" title="Azure Function 介紹" target="_blank">Azure Function 介紹</a>
+      </li>
+      <li>
+          <a href="/spring-boot-i18n/" title="SpringBoot i18n 國際化設定" target="_blank">SpringBoot i18n 國際化設定</a>
+      </li>
+      <li>
+          <a href="/azure-queue/" title="Azure Queue Storage 介紹與操作" target="_blank">Azure Queue Storage 介紹與操作</a>
+      </li>
+  </ul>
+  </div>
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://yinghao1019.github.io/rest-template-optimize/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.imgur.com/awk567A.jpg">
+      <meta itemprop="name" content="DuDuHow">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DuDuHow's Coding life">
+      <meta itemprop="description" content="歡迎來到 DuDuHow 的程式人生">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="RestTemplate 效能調教 | DuDuHow's Coding life">
+      <meta itemprop="description" content="本文講解如何在Spring Boot 專案中優化RestTemplate 的效能, 通過將Http Client 替換成Apache Http Client 、設定connection pool, keep-alive 策略等, 讓讀者更清楚RestTemplate 優化的方向。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RestTemplate 效能調教
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2024-01-09 22:29:41" itemprop="dateCreated datePublished" datetime="2024-01-09T22:29:41+08:00">2024-01-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新於</span>
+      <time title="修改時間：2024-01-13 08:47:13" itemprop="dateModified" datetime="2024-01-13T08:47:13+08:00">2024-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring-Boot/" itemprop="url" rel="index"><span itemprop="name">Spring Boot</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/rest-template-optimize/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="rest-template-optimize/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+            <div class="post-description">本文講解如何在Spring Boot 專案中優化RestTemplate 的效能, 通過將Http Client 替換成Apache Http Client 、設定connection pool, keep-alive 策略等, 讓讀者更清楚RestTemplate 優化的方向。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>當後端需要跟其他第三方服務，系統溝通時，最常用的方式為透過 Rest API 進行溝通。<br>Spring Boot 專案中，提供了一個好用的 call API 工具 - RestTemplate , RestTemplate 提供了簡單的介面，<br>簡化了我們呼叫 API 的程式碼。</p>
+<p>但是，RestTemplate 在發送大量請求時往往會發生效能瓶頸，故本篇文章將教學如何進行效能調教來解決 RestTemplate 速度慢的問題。</p>
+<h2 id="設定ClientHttpRequestFactory"><a href="#設定ClientHttpRequestFactory" class="headerlink" title="設定ClientHttpRequestFactory"></a>設定 ClientHttpRequestFactory</h2><p>RestTemplate 底層預設發送 HTTP Request  的工具為使用 HttpURLConnection 來進行發送 。</p>
+<p>此工具未支援 HTTP Connection Pool 來縮短消耗的時間，我們可將其換成現今 Java 有支援 Connection Pool 的工具，像是 OkHttp , </p>
+<p>Apache HttpClient , WebClient ,FeignClient 。而本篇將採用設定 Apache HttpClient 作為 RestTemplate 發送 HTTP Request 的工具 。</p>
+<p>安裝 dependency</p>
+<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.httpcomponents<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>httpclient<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.5.13<span class="tag">&lt;/<span class="name">version</span>&gt;</span> <span class="comment">&lt;!-- or the latest version --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>建立 HttpComponentsClientHttpRequestFactory 來替換 HTTP Client</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line">   <span class="keyword">public</span> CloseableHttpClient <span class="title function_">httpClient</span><span class="params">()</span> {</span><br><span class="line">       <span class="keyword">return</span> HttpClientBuilder.create()</span><br><span class="line">               .setMaxConnTotal(<span class="number">100</span>)      <span class="comment">// Set required maximum total connections</span></span><br><span class="line">               .setMaxConnPerRoute(<span class="number">20</span>)    <span class="comment">// Set required maximum connections per route</span></span><br><span class="line">               .build();</span><br><span class="line">   }</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Bean</span></span><br><span class="line">   <span class="keyword">public</span> RestTemplate <span class="title function_">restTemplate</span><span class="params">()</span> {</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">RestTemplate</span>(<span class="keyword">new</span> <span class="title class_">HttpComponentsClientHttpRequestFactory</span>(httpClient()));</span><br><span class="line">   }</span><br></pre></td></tr></tbody></table></figure>
+
+ <br>
+
+<h2 id="設定-Connection-Pool-Manager"><a href="#設定-Connection-Pool-Manager" class="headerlink" title="設定 Connection Pool Manager"></a>設定 Connection Pool Manager</h2><p>在 OSI 網路七層協定中，HTTP 是建構於 TCP 之上的通訊協定，如果每次請求都需要重新建立一次 Connection , 想必會非常的消耗資源 (TCP 三向交握的關係) 。因此 Apache Http Client 提供了 Connection Pool (連線池的機制) 。</p>
+<p>概念上與 AP Server 在跟資料庫連線時的 Connection Pool 類似，都是先 Keep 住 Connection 不立即關閉，等下次有 Request 來時就會借用那個 Connection 來發送請求，大幅減少了每個 Request 都需要花費建立 Connection 的資源 。</p>
+<p>至於如何設定請看下面程式碼說明</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line">   <span class="keyword">public</span> PoolingHtppClientConnectionManager <span class="title function_">customizedPoolingHtppClientConnectionManager</span><span class="params">()</span>{</span><br><span class="line">     <span class="comment">/*</span></span><br><span class="line"><span class="comment">     設定每個Connection 在Connection Pool 中的維持時間 , 範例為 5分鐘 , 此參數須小心設定</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">     <span class="type">PoolingHtppClientConnectionManager</span> <span class="variable">connManager</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PoolingHtppClientConnectionManager</span>(<span class="number">5</span>, TimeUnit.MINUTES);</span><br><span class="line">     connManager.setMaxTotal(<span class="number">100</span>);    <span class="comment">// Set required maximum total connections</span></span><br><span class="line">     connManager.setDefaultMaxPerRoute(<span class="number">20</span>);     <span class="comment">// Set required maximum connections per route</span></span><br><span class="line">   }</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><p>max total : connection Pool 最大的總連線數量，預設為 20</p>
+</li>
+<li><p>defaultMaxPerRoute: 每個路徑最大的連線數量，預設為 2</p>
+</li>
+</ul>
+<h2 id="設定-Keep-Alive-機制"><a href="#設定-Keep-Alive-機制" class="headerlink" title="設定 Keep Alive  機制"></a>設定 Keep Alive  機制</h2><p>在 HTTP 中，Keep -Alive 的機制為讓一個 Connection 在一定時間內可以發送多個 Request 。為了避免 server side 已關閉連線，但 client 端卻還是維持該 Connection 的情況 (<strong>Connection Reset by Peer</strong>)。透過設定 Keep -Alive Header 來告知 Http Client Connection 要維持的時間。</p>
+<p> 通常若 server 端未給予 keep alive 的 timeout , 預設可以設定 30 或 60 秒來維持</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1private ConnectionKeepAliveStrategy connectionKeepAliveStrategy() {</span><br><span class="line"> 2  return new DefaultConnectionKeepAliveStrategy() {</span><br><span class="line"> 3    @Override</span><br><span class="line"> 4    public long getKeepAliveDuration(final HttpResponse response, final HttpContext context) {</span><br><span class="line"> 5      long keepAliveDuration = super.getKeepAliveDuration(response, context);</span><br><span class="line"> 6      if (keepAliveDuration &lt; 0) {</span><br><span class="line"> 7        keepAliveDuration = DEFAULT_KEEP_ALIVE_TIME_MILLIS;</span><br><span class="line"> 8      } else if (keepAliveDuration &gt; MAX_KEEP_ALIVE_TIME_MILLIS) {</span><br><span class="line"> 9        keepAliveDuration = MAX_KEEP_ALIVE_TIME_MILLIS;</span><br><span class="line">10      }</span><br></pre></td></tr></tbody></table></figure>
+
+<p>設定排程檢查並關閉 無效 or Idle timeout 的連線</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line">   <span class="keyword">public</span> Runnable <span class="title function_">idleConnectionMonitor</span><span class="params">(<span class="keyword">final</span> PoolingHttpClientConnectionManager connectionManager)</span> {</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Runnable</span>() {</span><br><span class="line">           <span class="meta">@Override</span></span><br><span class="line">           <span class="meta">@Scheduled(fixedDelay = 10000)</span></span><br><span class="line">           <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> {</span><br><span class="line">               <span class="keyword">try</span> {</span><br><span class="line">                   <span class="keyword">if</span> (connectionManager != <span class="literal">null</span>) {</span><br><span class="line">                       LOGGER.trace(<span class="string">"run IdleConnectionMonitor - Closing expired and idle connections..."</span>);</span><br><span class="line">                       connectionManager.closeExpiredConnections();</span><br><span class="line">                       connectionManager.closeIdleConnections(CLOSE_IDLE_CONNECTION_WAIT_TIME_SECS, TimeUnit.SECONDS);</span><br><span class="line">                   } <span class="keyword">else</span> {</span><br><span class="line">                       LOGGER.trace(<span class="string">"run IdleConnectionMonitor - Http Client Connection manager is not initialised"</span>);</span><br><span class="line">                   }</span><br><span class="line">               } <span class="keyword">catch</span> (Exception e) {</span><br><span class="line">                   LOGGER.error(<span class="string">"run IdleConnectionMonitor - Exception occurred. msg={}, e={}"</span>, e.getMessage(), e);</span><br><span class="line">               }</span><br><span class="line">           }</span><br><span class="line">       };</span><br><span class="line">   }	</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="設定請求參數"><a href="#設定請求參數" class="headerlink" title="設定請求參數"></a>設定請求參數</h2><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> RequestConfig <span class="title function_">requestConfig</span><span class="params">()</span>{</span><br><span class="line">    <span class="type">RequestConfig</span> <span class="variable">requestConfig</span> <span class="operator">=</span></span><br><span class="line">            RequestConfig.custom()</span><br><span class="line">                    .setConnectionRequestTimeout(REQUEST_TIMEOUT)</span><br><span class="line">                    .setConnectTimeout(CONNECT_TIMEOUT)</span><br><span class="line">                    .setSocketTimeout(SOCKET_TIMEOUT)</span><br><span class="line">                    .build();</span><br><span class="line">    <span class="keyword">return</span> requestConfig;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>connection request timeout : client 端從 connection pool 取得連線的最大時效</li>
+<li> connection timeout : 建立連線前的最大時效</li>
+<li> socket timeout : client 等待 server 端回應資料的最大時效</li>
+</ul>
+<h2 id="完整設定範例"><a href="#完整設定範例" class="headerlink" title="完整設定範例"></a>完整設定範例</h2><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Log4j2</span></span><br><span class="line"><span class="meta">@RequiredArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HttpClientConfig</span> {</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Determines the timeout in milliseconds until a connection is established.</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">CONNECT_TIMEOUT</span> <span class="operator">=</span> <span class="number">30000</span>;</span><br><span class="line">    <span class="comment">// The timeout when requesting a connection from the connection manager.</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">REQUEST_TIMEOUT</span> <span class="operator">=</span> <span class="number">30000</span>;</span><br><span class="line">    <span class="comment">// The timeout for waiting for data</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">SOCKET_TIMEOUT</span> <span class="operator">=</span> <span class="number">60000</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">DEFAULT_KEEP_ALIVE_TIME_MILLIS</span> <span class="operator">=</span> <span class="number">20</span> * <span class="number">1000</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">CLOSE_IDLE_CONNECTION_WAIT_TIME_SECS</span> <span class="operator">=</span> <span class="number">30</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> EnvironmentConfig environmentConfig;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value("${http.conn-pool.max-total-conn:100}")</span></span><br><span class="line">    <span class="keyword">private</span> Integer maxTotalConnection;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value("${http.conn-pool.max-per-route-conn:20}")</span></span><br><span class="line">    <span class="keyword">private</span> Integer maxPerRouteConnection;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> PoolingHttpClientConnectionManager <span class="title function_">poolingConnectionManager</span><span class="params">()</span> {</span><br><span class="line">        <span class="type">PoolingHttpClientConnectionManager</span> <span class="variable">poolingConnectionManager</span> <span class="operator">=</span></span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">PoolingHttpClientConnectionManager</span>();</span><br><span class="line">        poolingConnectionManager.setMaxTotal(maxTotalConnection);</span><br><span class="line">        poolingConnectionManager.setDefaultMaxPerRoute(maxPerRouteConnection);</span><br><span class="line">        <span class="keyword">return</span> poolingConnectionManager;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> ConnectionKeepAliveStrategy <span class="title function_">connectionKeepAliveStrategy</span><span class="params">()</span> {</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">DefaultConnectionKeepAliveStrategy</span>() {</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">getKeepAliveDuration</span><span class="params">(HttpResponse response, HttpContext context)</span> {</span><br><span class="line">                <span class="type">long</span> <span class="variable">keepAliveDuration</span> <span class="operator">=</span> <span class="built_in">super</span>.getKeepAliveDuration(response, context);</span><br><span class="line">                <span class="keyword">if</span> (keepAliveDuration &lt; <span class="number">0</span>) {</span><br><span class="line">                    <span class="keyword">return</span> DEFAULT_KEEP_ALIVE_TIME_MILLIS;</span><br><span class="line">                }</span><br><span class="line">                <span class="keyword">return</span> keepAliveDuration;</span><br><span class="line">            }</span><br><span class="line">        };</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> CloseableHttpClient <span class="title function_">httpClient</span><span class="params">()</span> {</span><br><span class="line">        <span class="type">RequestConfig</span> <span class="variable">requestConfig</span> <span class="operator">=</span></span><br><span class="line">                RequestConfig.custom()</span><br><span class="line">                        .setConnectionRequestTimeout(REQUEST_TIMEOUT)</span><br><span class="line">                        .setConnectTimeout(CONNECT_TIMEOUT)</span><br><span class="line">                        .setSocketTimeout(SOCKET_TIMEOUT)</span><br><span class="line">                        .build();</span><br><span class="line">        <span class="type">DefaultProxyRoutePlanner</span> <span class="variable">proxyRoutePlanner</span> <span class="operator">=</span> proxyRouter();</span><br><span class="line"></span><br><span class="line">        <span class="type">HttpClientBuilder</span> <span class="variable">httpClientBuilder</span> <span class="operator">=</span></span><br><span class="line">                HttpClients.custom()</span><br><span class="line">                        .setDefaultRequestConfig(requestConfig)</span><br><span class="line">                        .setConnectionManager(poolingConnectionManager())</span><br><span class="line">                        .setKeepAliveStrategy(connectionKeepAliveStrategy())</span><br><span class="line">                        .setConnectionManagerShared(<span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">if</span> (proxyRoutePlanner != <span class="literal">null</span>) {</span><br><span class="line">            httpClientBuilder.setRoutePlanner(proxyRoutePlanner);</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> httpClientBuilder.build();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> Runnable <span class="title function_">idleConnectionMonitor</span><span class="params">(</span></span><br><span class="line"><span class="params">            <span class="keyword">final</span> PoolingHttpClientConnectionManager connectionManager)</span> {</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Runnable</span>() {</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="meta">@Scheduled(fixedDelay = 10000)</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> {</span><br><span class="line">                <span class="keyword">try</span> {</span><br><span class="line">                    <span class="keyword">if</span> (connectionManager != <span class="literal">null</span>) {</span><br><span class="line">                        log.trace(</span><br><span class="line">                                <span class="string">"run IdleConnectionMonitor - Closing expired and idle connections..."</span>);</span><br><span class="line">                        connectionManager.closeExpiredConnections();</span><br><span class="line">                        connectionManager.closeIdleConnections(</span><br><span class="line">                                CLOSE_IDLE_CONNECTION_WAIT_TIME_SECS, TimeUnit.SECONDS);</span><br><span class="line">                    } <span class="keyword">else</span> {</span><br><span class="line">                        log.trace(</span><br><span class="line">                                <span class="string">"run IdleConnectionMonitor - Http Client Connection manager is not initialised"</span>);</span><br><span class="line">                    }</span><br><span class="line">                } <span class="keyword">catch</span> (Exception e) {</span><br><span class="line">                    log.error(</span><br><span class="line">                            <span class="string">"run IdleConnectionMonitor - Exception occurred. msg={}, e={}"</span>,</span><br><span class="line">                            e.getMessage(),</span><br><span class="line">                            e);</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">        };</span><br><span class="line">    }</span><br><span class="line"> <span class="comment">/*</span></span><br><span class="line"><span class="comment">      設定thread pool ,讓idle monitor的thread 能被執行</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">	<span class="keyword">public</span> TaskScheduler <span class="title function_">taskScheduler</span><span class="params">()</span> {</span><br><span class="line">		<span class="type">ThreadPoolTaskScheduler</span> <span class="variable">scheduler</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ThreadPoolTaskScheduler</span>();</span><br><span class="line">		scheduler.setThreadNamePrefix(<span class="string">"poolScheduler"</span>);</span><br><span class="line">		scheduler.setPoolSize(<span class="number">50</span>);</span><br><span class="line">		<span class="keyword">return</span> scheduler;</span><br><span class="line">	}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://hc.apache.org/httpcomponents-client-4.5.x/current/tutorial/html/connmgmt.html">Apache 官方文件 -  Connection management</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://medium.com/starbugs/%E8%AC%8E%E4%B9%8B%E8%81%B2%E5%B0%8D-connection-%E8%AA%AA%E9%81%93-%E4%BD%A0%E5%B7%B2%E7%B6%93%E6%AD%BB%E4%BA%86-b53d27c7ecb7">謎之聲對 Connection 說道：你已經死了！</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://byvoid.com/zht/blog/http-keep-alive-header/">什麼是 Keep-Alive 模式</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://ithelp.ithome.com.tw/articles/10156092">[30 天學會 Web 前端效能優化] 5. 淺談 HTTP 協定</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.baeldung.com/httpclient-connection-management">Apache HttpClient Connection Management</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://howtodoinjava.com/spring-boot2/resttemplate/resttemplate-httpclient-java-config/">Configuring HttpClient with Spring RestTemplate</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.dhaval-shah.com/rest-client-with-desired-nfrs-using-springs-resttemplate/">REST client with desired NFRs using Spring RestTemplate</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://medium.com/@nitinvohra/how-to-improve-performance-of-spring-resttemplate-6af37e0a0f33">How to improve performance of Spring RestTemplate?</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://springframework.guru/using-resttemplate-with-apaches-httpclient/">Using RestTemplate with Apaches HttpClient</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://dev.to/akdevcraft/never-use-spring-resttemplate-default-implementation-2ghj">Avoid Spring RestTemplate Default Implementation to Prevent Performance Impact</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://hc.apache.org/httpcomponents-client-4.5.x/current/tutorial/html/connmgmt.html#d5e418">Apache Http Client Connection Management</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+              <a href="/tags/Http/" rel="tag"><i class="fa fa-tag"></i> Http</a>
+              <a href="/tags/Apache/" rel="tag"><i class="fa fa-tag"></i> Apache</a>
+              <a href="/tags/RestTemplate/" rel="tag"><i class="fa fa-tag"></i> RestTemplate</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/az-func-java/" rel="prev" title="Azure Function 實作教學">
+                  <i class="fa fa-angle-left"></i> Azure Function 實作教學
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa-regular fa-closed-captioning"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Howard - 轉載文章請附上原文連結</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.28/fancybox/fancybox.umd.js" integrity="sha256-ytMJGN3toR+a84u7g7NuHm91VIR06Q41kMWDr2pq7Zo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"duduhow","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>
