@@ -83,9 +83,11 @@ Apache HttpClient , WebClient ,FeignClient 。而本篇將採用設定 Apache Ht
 
   
 
-## 設定 Keep Alive 策略
+## 設定 Keep Alive  機制
 
-客製化 預設 HTTP Keep Alive的連線維持時間
+在HTTP 中, Keep -Alive的機制為讓一個Connection 在一定時間內可以發送多個Request 。為了避免server side 已關閉連線,  但client 端卻還是維持該Connection 的情況 ()。透過設定Keep -Alive Header 來告知Http Client Connection 要維持的時間。
+
+ 通常若server端未給予keep alive 的timeout , 預設可以設定 30 或 60 秒來維持
 
 ```
 1private ConnectionKeepAliveStrategy connectionKeepAliveStrategy() {
@@ -269,4 +271,5 @@ public class HttpClientConfig {
 - [How to improve performance of Spring RestTemplate?](https://medium.com/@nitinvohra/how-to-improve-performance-of-spring-resttemplate-6af37e0a0f33)
 - [Using RestTemplate with Apaches HttpClient](https://springframework.guru/using-resttemplate-with-apaches-httpclient/)
 - [Avoid Spring RestTemplate Default Implementation to Prevent Performance Impact](https://dev.to/akdevcraft/never-use-spring-resttemplate-default-implementation-2ghj)
+- [Apache Http Client Connection Management](https://hc.apache.org/httpcomponents-client-4.5.x/current/tutorial/html/connmgmt.html#d5e418)
 
