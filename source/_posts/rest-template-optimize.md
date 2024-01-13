@@ -85,7 +85,7 @@ Apache HttpClient , WebClient ,FeignClient 。而本篇將採用設定 Apache Ht
 
 ## 設定 Keep Alive  機制
 
-在HTTP 中, Keep -Alive的機制為讓一個Connection 在一定時間內可以發送多個Request 。為了避免server side 已關閉連線,  但client 端卻還是維持該Connection 的情況 ()。透過設定Keep -Alive Header 來告知Http Client Connection 要維持的時間。
+在HTTP 中, Keep -Alive的機制為讓一個Connection 在一定時間內可以發送多個Request 。為了避免server side 已關閉連線,  但client 端卻還是維持該Connection 的情況 (**Connection Reset by Peer**)。透過設定Keep -Alive Header 來告知Http Client Connection 要維持的時間。
 
  通常若server端未給予keep alive 的timeout , 預設可以設定 30 或 60 秒來維持
 
