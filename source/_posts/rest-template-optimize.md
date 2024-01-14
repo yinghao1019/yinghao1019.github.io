@@ -8,7 +8,8 @@ tags:
   - [RestTemplate]
 categories:
   - [Spring Boot]
-description: 本文講解如何在Spring Boot 專案中優化RestTemplate 的效能, 通過將Http Client 替換成Apache Http Client 、設定connection pool, keep-alive 策略等, 讓讀者更清楚RestTemplate 優化的方向。
+description: 本文講解如何在Spring Boot 專案中優化RestTemplate 的效能, 通過將Http Client 替換成Apache Http Client 、
+  設定connection pool, keep-alive 策略等, 讓讀者更清楚RestTemplate 優化的方向。
 ---
 
 ## 前言
