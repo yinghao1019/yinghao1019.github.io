@@ -13,9 +13,8 @@ description: 本文講解如何在Spring Boot 專案中優化RestTemplate 的效
 ---
 
 ## 前言
-當後端需要跟其他第三方服務, 系統溝通時, 最常用的方式為透過Rest API 進行溝通。
-Spring Boot 專案中, 提供了一個好用的call API 工具 - RestTemplate , RestTemplate 提供了簡單的介面,
-簡化了我們呼叫API的程式碼。
+當後端需要跟其他第三方服務、系統溝通時, 最常用的方式為透過Rest API 進行溝通。Spring Boot 專案中, 提供了一個好用的
+call API 工具 - RestTemplate , RestTemplate 提供了簡單的介面簡化了我們呼叫API的程式碼。
 
 但是, RestTemplate 在發送大量請求時往往會發生效能瓶頸, 故本篇文章將教學如何進行效能調教來解決RestTemplate 速度慢的問題。
 
@@ -23,14 +22,13 @@ Spring Boot 專案中, 提供了一個好用的call API 工具 - RestTemplate , 
 
 ## 設定ClientHttpRequestFactory
 
-RestTemplate 底層預設發送 HTTP Request  的工具為使用 HttpURLConnection 來進行發送 。
+RestTemplate 底層預設發送 HTTP Request  的工具為使用 HttpURLConnection 來進行發送。此工具未支援HTTP Connection 
+Pool 來縮短消耗的時間 , 我們可將其換成現今Java 有支援Connection Pool 的工具 , 像是 OkHttp、Apache HttpClient、
+WebClient、FeignClient 等等。
 
-此工具未支援HTTP Connection Pool 來縮短消耗的時間 , 我們可將其換成現今Java 有支援Connection Pool 的工具 , 像是OkHttp , 
-
-Apache HttpClient , WebClient ,FeignClient 。而本篇將採用設定 Apache HttpClient 作為RestTemplate 發送HTTP Request 的工具 。
+而本篇將採用設定Apache HttpClient作為RestTemplate 發送HTTP Request 的工具 。
 
 安裝 dependency
-
 ```xml
 <dependency>
     <groupId>org.apache.httpcomponents</groupId>
@@ -42,7 +40,8 @@ Apache HttpClient , WebClient ,FeignClient 。而本篇將採用設定 Apache Ht
 建立 HttpComponentsClientHttpRequestFactory 來替換HTTP Client
 
 ```java
-	@Bean
+
+    @Bean
     public CloseableHttpClient httpClient() {
         return HttpClientBuilder.create()
                 .setMaxConnTotal(100)      // Set required maximum total connections
@@ -67,7 +66,7 @@ Apache HttpClient , WebClient ,FeignClient 。而本篇將採用設定 Apache Ht
 至於如何設定請看下面程式碼說明
 
 ```java
-	@Bean
+    @Bean
     public PoolingHtppClientConnectionManager customizedPoolingHtppClientConnectionManager(){
       /*
       設定每個Connection 在Connection Pool 中的維持時間 , 範例為 5分鐘 , 此參數須小心設定
@@ -90,17 +89,19 @@ Apache HttpClient , WebClient ,FeignClient 。而本篇將採用設定 Apache Ht
 
  通常若server端未給予keep alive 的timeout , 預設可以設定 30 或 60 秒來維持
 
-```
-1private ConnectionKeepAliveStrategy connectionKeepAliveStrategy() {
- 2  return new DefaultConnectionKeepAliveStrategy() {
- 3    @Override
- 4    public long getKeepAliveDuration(final HttpResponse response, final HttpContext context) {
- 5      long keepAliveDuration = super.getKeepAliveDuration(response, context);
- 6      if (keepAliveDuration < 0) {
- 7        keepAliveDuration = DEFAULT_KEEP_ALIVE_TIME_MILLIS;
- 8      } else if (keepAliveDuration > MAX_KEEP_ALIVE_TIME_MILLIS) {
- 9        keepAliveDuration = MAX_KEEP_ALIVE_TIME_MILLIS;
-10      }
+```Java
+   public ConnectionKeepAliveStrategy connectionKeepAliveStrategy() {
+        return new DefaultConnectionKeepAliveStrategy() {
+            @Override
+            public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
+                long keepAliveDuration = super.getKeepAliveDuration(response, context);
+                if (keepAliveDuration < 0) {
+                    return DEFAULT_KEEP_ALIVE_TIME_MILLIS;
+                }
+                return keepAliveDuration;
+            }
+        };
+    }
 ```
 
 設定排程檢查並關閉 無效 or Idle timeout 的連線
@@ -249,7 +250,7 @@ public class HttpClientConfig {
  /*
       設定thread pool ,讓idle monitor的thread 能被執行
 */
-    @Bean
+	@Bean
 	public TaskScheduler taskScheduler() {
 		ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
 		scheduler.setThreadNamePrefix("poolScheduler");
