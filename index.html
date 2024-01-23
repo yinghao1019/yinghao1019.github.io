@@ -167,13 +167,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分類</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -200,6 +200,9 @@
   </div>
   <ul class="links-of-blogroll-list">
       <li>
+          <a href="/spring-async/" title="Spring 非同步程式設計" target="_blank">Spring 非同步程式設計</a>
+      </li>
+      <li>
           <a href="/spring-boot-retry/" title="Spring Boot 重試機制" target="_blank">Spring Boot 重試機制</a>
       </li>
       <li>
@@ -210,9 +213,6 @@
       </li>
       <li>
           <a href="/az-func-basic/" title="Azure Function 介紹" target="_blank">Azure Function 介紹</a>
-      </li>
-      <li>
-          <a href="/spring-boot-i18n/" title="SpringBoot i18n 國際化設定" target="_blank">SpringBoot i18n 國際化設定</a>
       </li>
   </ul>
   </div>
@@ -227,6 +227,113 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://yinghao1019.github.io/spring-async/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.imgur.com/fj90hOs.jpg">
+      <meta itemprop="name" content="DuDuHow">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DuDuHow's Coding life">
+      <meta itemprop="description" content="歡迎來到 DuDuHow 的程式人生">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | DuDuHow's Coding life">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/spring-async/" class="post-title-link" itemprop="url">Spring 非同步程式設計</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2024-01-20 23:51:47" itemprop="dateCreated datePublished" datetime="2024-01-20T23:51:47+08:00">2024-01-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新於</span>
+      <time title="修改時間：2024-01-24 00:21:50" itemprop="dateModified" datetime="2024-01-24T00:21:50+08:00">2024-01-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/spring-async/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="spring-async/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>為了改善應用程式部分功能的效能，像是呼叫多個第三方 API , 資料處理… 等等，往往會用非同步設計的方式達到並行處理的效果.<br>但若採用 Thread, Runbbable ,Callable 這些寫法來實現，會產出許多笨重且較難以維護的程式碼，因此 Spring @Async<br>來改善程式的可讀性與設計方式。<br>本篇會將介紹 Spring @Async 與 Java 8 CompletableFuture 的組合來介紹非同步程式設計的方式。 </p>
+<h2 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.tpisoftware.com/tpu/articleDetails/1484">JDK8 - CompletableFuture 非同步處理簡介</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.baeldung.com/spring-async">How To Do @Async in Spring</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://matthung0807.blogspot.com/2020/06/spring-boot-async-methods-example.html">Spring Boot @Async 非同步方法範例</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://ithelp.ithome.com.tw/articles/10278638?sc=iThelpR">今晚我想來個 Spring Async 非同步的感覺</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://popcornylu.gitbooks.io/java_multithread/content/async/cfuture.html">CompletableFuture</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.javadoop.com/post/completable-future">CompletableFuture 使用介绍</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -272,7 +379,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新於</span>
-      <time title="修改時間：2024-01-21 20:48:01" itemprop="dateModified" datetime="2024-01-21T20:48:01+08:00">2024-01-21</time>
+      <time title="修改時間：2024-01-24 00:21:50" itemprop="dateModified" datetime="2024-01-24T00:21:50+08:00">2024-01-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -378,7 +485,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新於</span>
-      <time title="修改時間：2024-01-21 20:48:01" itemprop="dateModified" datetime="2024-01-21T20:48:01+08:00">2024-01-21</time>
+      <time title="修改時間：2024-01-24 00:21:50" itemprop="dateModified" datetime="2024-01-24T00:21:50+08:00">2024-01-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -484,7 +591,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新於</span>
-      <time title="修改時間：2024-01-21 20:48:01" itemprop="dateModified" datetime="2024-01-21T20:48:01+08:00">2024-01-21</time>
+      <time title="修改時間：2024-01-24 00:21:50" itemprop="dateModified" datetime="2024-01-24T00:21:50+08:00">2024-01-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -590,7 +697,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新於</span>
-      <time title="修改時間：2024-01-21 20:48:01" itemprop="dateModified" datetime="2024-01-21T20:48:01+08:00">2024-01-21</time>
+      <time title="修改時間：2024-01-24 00:21:50" itemprop="dateModified" datetime="2024-01-24T00:21:50+08:00">2024-01-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -696,7 +803,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新於</span>
-      <time title="修改時間：2024-01-21 20:48:01" itemprop="dateModified" datetime="2024-01-21T20:48:01+08:00">2024-01-21</time>
+      <time title="修改時間：2024-01-24 00:21:50" itemprop="dateModified" datetime="2024-01-24T00:21:50+08:00">2024-01-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -802,7 +909,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新於</span>
-      <time title="修改時間：2024-01-21 20:48:01" itemprop="dateModified" datetime="2024-01-21T20:48:01+08:00">2024-01-21</time>
+      <time title="修改時間：2024-01-24 00:21:50" itemprop="dateModified" datetime="2024-01-24T00:21:50+08:00">2024-01-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -908,7 +1015,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新於</span>
-      <time title="修改時間：2024-01-21 20:48:01" itemprop="dateModified" datetime="2024-01-21T20:48:01+08:00">2024-01-21</time>
+      <time title="修改時間：2024-01-24 00:21:50" itemprop="dateModified" datetime="2024-01-24T00:21:50+08:00">2024-01-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1014,7 +1121,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新於</span>
-      <time title="修改時間：2024-01-21 20:48:01" itemprop="dateModified" datetime="2024-01-21T20:48:01+08:00">2024-01-21</time>
+      <time title="修改時間：2024-01-24 00:21:50" itemprop="dateModified" datetime="2024-01-24T00:21:50+08:00">2024-01-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1120,7 +1227,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新於</span>
-      <time title="修改時間：2024-01-21 20:48:01" itemprop="dateModified" datetime="2024-01-21T20:48:01+08:00">2024-01-21</time>
+      <time title="修改時間：2024-01-24 00:21:50" itemprop="dateModified" datetime="2024-01-24T00:21:50+08:00">2024-01-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
