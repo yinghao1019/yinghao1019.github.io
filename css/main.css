@@ -18,10 +18,10 @@
   --btn-default-hover-bg: #222;
   --btn-default-hover-color: #fff;
   --btn-default-hover-border-color: #222;
-  --highlight-background: #474949;
-  --highlight-foreground: #d1d9e1;
-  --highlight-gutter-background: #545758;
-  --highlight-gutter-foreground: #c3cad1;
+  --highlight-background: #333;
+  --highlight-foreground: #fff;
+  --highlight-gutter-background: #474747;
+  --highlight-gutter-foreground: #eaeaea;
   color-scheme: light;
 }
 html {
@@ -373,74 +373,124 @@ pre code.hljs {
 code.hljs {
   padding: 3px 5px
 }
-/*
+/*!
+   Theme: Agate
+   Author: (c) Taufik Nurrohman <hi@taufik-nurrohman.com>
+   Maintainer: @taufik-nurrohman
+   Updated: 2021-04-24
 
-Style with support for rainbow parens
-
+   #333
+   #62c8f3
+   #7bd694
+   #888
+   #a2fca2
+   #ade5fc
+   #b8d8a2
+   #c6b4f0
+   #d36363
+   #fc9b9b
+   #fcc28c
+   #ffa
+   #fff
 */
 .hljs {
-  background: #474949;
-  color: #d1d9e1
+  background: #333;
+  color: #fff
 }
-.hljs-comment,
-.hljs-quote {
-  color: #969896;
-  font-style: italic
-}
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-literal,
-.hljs-type,
-.hljs-addition {
-  color: #cc99cc
-}
-.hljs-number,
-.hljs-selector-attr,
-.hljs-selector-pseudo {
-  color: #f99157
-}
-.hljs-string,
 .hljs-doctag,
-.hljs-regexp {
-  color: #8abeb7
-}
-.hljs-title,
-.hljs-name,
-.hljs-section,
-.hljs-built_in {
-  color: #b5bd68
-}
-.hljs-variable,
-.hljs-template-variable,
-.hljs-selector-id,
-.hljs-title.class_,
-.hljs-class .hljs-title {
-  color: #ffcc66
-}
-.hljs-section,
+.hljs-meta-keyword,
 .hljs-name,
 .hljs-strong {
   font-weight: bold
 }
-.hljs-symbol,
-.hljs-bullet,
-.hljs-subst,
-.hljs-meta,
-.hljs-link {
-  color: #f99157
-}
-.hljs-deletion {
-  color: #dc322f
-}
-.hljs-formula {
-  background: #eee8d5
-}
-.hljs-attr,
-.hljs-attribute {
-  color: #81a2be
-}
+.hljs-code,
 .hljs-emphasis {
   font-style: italic
+}
+.hljs-section,
+.hljs-tag {
+  color: #62c8f3
+}
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-template-variable,
+.hljs-variable {
+  color: #ade5fc
+}
+.hljs-meta-string,
+.hljs-string {
+  color: #a2fca2
+}
+.hljs-attr,
+.hljs-quote,
+.hljs-selector-attr {
+  color: #7bd694
+}
+.hljs-tag .hljs-attr {
+  color: inherit
+}
+.hljs-attribute,
+.hljs-title,
+.hljs-type {
+  color: #ffa
+}
+.hljs-number,
+.hljs-symbol {
+  color: #d36363
+}
+.hljs-bullet,
+.hljs-template-tag {
+  color: #b8d8a2
+}
+.hljs-built_in,
+.hljs-keyword,
+.hljs-literal,
+.hljs-selector-tag {
+  color: #fcc28c
+}
+.hljs-code,
+.hljs-comment,
+.hljs-formula {
+  color: #888
+}
+.hljs-link,
+.hljs-selector-pseudo,
+.hljs-regexp {
+  color: #c6b4f0
+}
+.hljs-meta {
+  color: #fc9b9b
+}
+.hljs-deletion {
+  background: #fc9b9b;
+  color: #333
+}
+.hljs-addition {
+  background: #a2fca2;
+  color: #333
+}
+/* Purposely ignored */
+.hljs-operator,
+.hljs-params,
+.hljs-property,
+.hljs-punctuation {
+  
+}
+.hljs-subst {
+  color: #fff
+}
+/* This applies only if HTML auto-merging plugin is enabled by user (#2889) */
+.hljs a {
+  color: inherit
+}
+.hljs a:focus,
+.hljs a:hover {
+  color: inherit;
+  text-decoration: underline
+}
+.hljs mark {
+  background: #555;
+  color: inherit
 }
 .highlight:hover .copy-btn,
 .code-container:hover .copy-btn {
@@ -457,11 +507,56 @@ Style with support for rainbow parens
   padding: 2px 6px;
   position: absolute;
   transition: opacity 0.2s ease-in-out;
-  background: #fff;
-  border: 0;
-  font-size: 0.8125em;
+  color: var(--highlight-foreground);
+  font-size: 14px;
   right: 0;
-  top: 0;
+  top: 2px;
+}
+figure.highlight {
+  border-radius: 5px;
+  box-shadow: 0 10px 30px 0 rgba(0,0,0,0.4);
+  padding-top: 30px;
+}
+figure.highlight .table-container {
+  border-radius: 0 0 5px 5px;
+}
+figure.highlight::before {
+  background: #fc625d;
+  box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
+  left: 12px;
+  margin-top: -20px;
+  position: absolute;
+  border-radius: 50%;
+  content: ' ';
+  height: 12px;
+  width: 12px;
+}
+.expand-btn {
+  bottom: 0;
+  color: var(--highlight-foreground);
+  cursor: pointer;
+  display: none;
+  left: 0;
+  right: 0;
+  position: absolute;
+  text-align: center;
+}
+.fold-cover {
+  background-image: linear-gradient(to top, var(--highlight-background) 0, rgba(0,0,0,0) 100%);
+  bottom: 0;
+  display: none;
+  height: 50px;
+  left: 0;
+  right: 0;
+  position: absolute;
+}
+.highlight-fold {
+  max-height: 500px;
+  overflow-y: hidden !important;
+}
+.highlight-fold .expand-btn,
+.highlight-fold .fold-cover {
+  display: block;
 }
 code,
 kbd,
